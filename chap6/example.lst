@@ -1,0 +1,83 @@
+     1                                 %line 1+1 ./chap5/example.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 
+    13                                 
+    14                                 
+    15 00000000 11                     bVar1 db 17
+    16 00000001 09                     bVar2 db 9
+    17 00000002 00                     bResult db 0
+    18                                 
+    19                                 
+    20 00000003 6842                   wVar1 dw 17000
+    21 00000005 2823                   wVar2 dw 9000
+    22 00000007 0000                   wResult dw 0
+    23                                 
+    24                                 
+    25                                 
+    26 00000009 40660301               dVar1 dd 17000000
+    27 0000000D 40548900               dVar2 dd 9000000
+    28 00000011 00000000               dResult dd 0
+    29                                 
+    30                                 
+    31                                 
+    32 00000015 80FE210A00000000       qVar1 dq 170000000
+    33 0000001D 804A5D0500000000       qVar2 dq 90000000
+    34 00000025 0000000000000000       qResult dq 0
+    35                                 
+    36                                 
+    37                                 
+    38                                 [section .text]
+    39                                 [global _start]
+    40                                 _start:
+    41                                 
+    42                                 
+    43                                 
+    44                                 
+    45                                 
+    46                                 
+    47                                 
+    48                                 
+    49 00000000 8A0425[00000000]        mov al, byte [bVar1]
+    50 00000007 020425[00000000]        add al, byte [bVar2]
+    51 0000000E 880425[00000000]        mov byte [bResult], al
+    52                                 
+    53                                 
+    54                                 
+    55                                 
+    56                                 
+    57 00000015 668B0425[00000000]      mov ax, word [wVar1]
+    58 0000001D 66030425[00000000]      add ax, word [wVar2]
+    59 00000025 66890425[00000000]      mov word [wResult], ax
+    60                                 
+    61                                 
+    62                                 
+    63                                 
+    64                                 
+    65 0000002D 8B0425[00000000]        mov eax, dword [dVar1]
+    66 00000034 030425[00000000]        add eax, dword [dVar2]
+    67 0000003B 890425[00000000]        mov dword [dResult], eax
+    68                                 
+    69                                 
+    70                                 
+    71                                 
+    72                                 
+    73 00000042 488B0425[00000000]      mov rax, qword [qVar1]
+    74 0000004A 48030425[00000000]      add rax, qword [qVar2]
+    75 00000052 48890425[00000000]      mov qword [qResult], rax
+    76                                 
+    77                                 
+    78                                 
+    79                                 
+    80                                 last:
+    81 0000005A 48C7C03C000000          mov rax, SYS_exit
+    82 00000061 48C7C300000000          mov rbx, EXIT_SUCCESS
+    83 00000068 0F05                    syscall

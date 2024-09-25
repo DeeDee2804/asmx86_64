@@ -1,0 +1,12 @@
+------------------------------------ 
+display variables 
+
+0x402002:	26
+0x402007:	26000
+0x402011:	26000000
+0x402025:	260000000
+
+ 
+Warning: 'set logging off', an alias for the command 'set logging enabled', is deprecated.
+Use 'set logging enabled off'.
+
