@@ -1,0 +1,28 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file pyramid.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display stats of the total areas \n
+echo Sum, Min, Max, Avg: \n
+x/dw &taSum
+x/dw &taMin
+x/dw &taMax
+x/dw &taAve
+echo Display stats of the volume \n
+echo Sum, Min, Max, Avg: \n
+x/dw &volSum
+x/dw &volMin
+x/dw &volMax
+x/dw &volAve
+echo \n \n
+set logging enabled off
+continue
+quit

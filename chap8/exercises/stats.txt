@@ -1,0 +1,19 @@
+(gdb) ------------------------------------ 
+Display sum, min, max, average of the list 
+
+0x40201c:	1006
+0x402020:	-1008
+0x402024:	1010
+0x402028:	167
+
+Display middle value of the list 
+
+0x40202c:	-1
+
+------------------------------------ 
+Display sum, count, average of negative values of the list 
+
+0x402030:	-2012
+0x402038:	2
+0x402034:	-1006
+

@@ -1,4 +1,4 @@
-# DDD Debugger
+# Instruction Set Overview
 
 **1/Which of the following instructions is legal / illegal? As appropriate, provide an explanation.**
 

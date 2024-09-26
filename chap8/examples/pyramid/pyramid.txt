@@ -1,0 +1,15 @@
+(gdb) ------------------------------------ 
+Display stats of the total areas 
+Sum, Min, Max, Avg: 
+0x40216a:	209652090
+0x402162:	246600
+0x402166:	23404194
+0x40216e:	4193041
+Display stats of the volume 
+Sum, Min, Max, Avg: 
+0x40217a:	355288952
+0x402172:	404466
+0x402176:	49397322
+0x40217e:	7105779
+
+ 
