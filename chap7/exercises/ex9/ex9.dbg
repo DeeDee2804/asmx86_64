@@ -1,0 +1,19 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file ex9_out.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display nth fibonacci number \n
+echo \n
+x/dw &fibn
+echo \n \n
+set logging enabled off
+continue
+quit

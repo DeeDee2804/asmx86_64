@@ -1,0 +1,30 @@
+
+Breakpoint 2, signedMul () at mul_example/mul_example.asm:82
+82	    mov     ax, word [wNumA]
+------------------------------------ 
+Display normal multiplication result 
+
+0x402002:	1764
+0x402004:	3066
+0x40200a:	5332114
+0x402016:	3066000000
+0x40202e:	3066000000000000	0
+
+ 
+
+Breakpoint 3, last () at mul_example/mul_example.asm:122
+122	    mov     rax, SYS_exit       ; Call code for exit
+------------------------------------ 
+Display signed multiplication result 
+
+0x402042:	-15600
+The signed value in a shorter range type is wrong 
+0x402044:	24832
+The signed value in a sufficient range type is correct 
+0x402046:	-2400000
+0x402052:	4746000
+0x402056:	-546000000
+0x40206a:	851520000
+0x402072:	-27600000000
+
+ 

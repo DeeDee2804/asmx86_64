@@ -1,0 +1,39 @@
+     1                                 %line 1+1 exercises/ex9/ex9.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 n equ 20
+    13                                 fib0 equ 0
+    14                                 fib1 equ 1
+    15                                 
+    16                                 
+    17 00000000 00000000               fibn dd 0
+    18                                 
+    19                                 
+    20                                 [section .text]
+    21                                 [global _start]
+    22                                 _start:
+    23 00000000 B800000000             mov eax, fib0
+    24 00000005 BB01000000             mov ebx, fib1
+    25 0000000A B914000000             mov ecx, n
+    26 0000000F FFC9                   dec ecx
+    27                                 
+    28                                 startLoop:
+    29 00000011 89DA                    mov edx, ebx
+    30 00000013 01C3                    add ebx, eax
+    31 00000015 89D0                    mov eax, edx
+    32 00000017 E2F6                    loop startLoop
+    33                                 
+    34 00000019 891C25[00000000]       mov dword [fibn], ebx
+    35                                 
+    36                                 last:
+    37 00000020 48C7C03C000000          mov rax, SYS_exit
+    38 00000027 48C7C300000000          mov rbx, EXIT_SUCCESS
+    39 0000002E 0F05                    syscall

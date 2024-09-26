@@ -1,0 +1,68 @@
+     1                                 %line 1+1 sub_example/sub_example.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 
+    13                                 
+    14 00000000 2A                     bNum1 db 42
+    15 00000001 49                     bNum2 db 73
+    16 00000002 00                     bAns db 0
+    17                                 
+    18 00000003 E110                   wNum1 dw 4321
+    19 00000005 D204                   wNum2 dw 1234
+    20 00000007 0000                   wAns dw 0
+    21                                 
+    22 00000009 10A40000               dNum1 dd 42000
+    23 0000000D 281D0100               dNum2 dd 73000
+    24 00000011 00000000               dAns dd 0
+    25                                 
+    26 00000015 40E4590400000000       qNum1 dq 73000000
+    27 0000001D 40E4590400000000       qNum2 dq 73000000
+    28 00000025 0000000000000000       qAns dq 0
+    29                                 
+    30                                 
+    31                                 [section .text]
+    32                                 [global _start]
+    33                                 _start:
+    34                                 
+    35                                 normalSub:
+    36                                 
+    37 00000000 8A0425[00000000]        mov al, byte [bNum1]
+    38 00000007 2A0425[00000000]        sub al, byte [bNum2]
+    39 0000000E 880425[00000000]        mov byte [bAns], al
+    40                                 
+    41                                 
+    42 00000015 668B0425[00000000]      mov ax, word [wNum1]
+    43 0000001D 662B0425[00000000]      sub ax, word [wNum2]
+    44 00000025 66890425[00000000]      mov word [wAns], ax
+    45                                 
+    46                                 
+    47 0000002D 8B0425[00000000]        mov eax, dword [dNum1]
+    48 00000034 2B0425[00000000]        sub eax, dword [dNum2]
+    49 0000003B 890425[00000000]        mov dword [dAns], eax
+    50                                 
+    51                                 
+    52 00000042 488B0425[00000000]      mov rax, qword [qNum1]
+    53 0000004A 482B0425[00000000]      sub rax, qword [qNum2]
+    54 00000052 48890425[00000000]      mov qword [qAns], rax
+    55                                 
+    56                                 decSub:
+    57 0000005A FE0C25[00000000]        dec byte [bAns]
+    58 00000061 66FF0C25[00000000]      dec word [wAns]
+    59 00000069 FF0C25[00000000]        dec dword [dAns]
+    60 00000070 48FF0C25[00000000]      dec qword [qAns]
+    61                                 
+    62                                 
+    63                                 
+    64                                 
+    65                                 last:
+    66 00000078 48C7C03C000000          mov rax, SYS_exit
+    67 0000007F 48C7C300000000          mov rbx, EXIT_SUCCESS
+    68 00000086 0F05                    syscall

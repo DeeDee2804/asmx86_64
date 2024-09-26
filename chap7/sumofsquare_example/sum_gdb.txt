@@ -5,16 +5,15 @@ echo \n\n
 break last
 run
 set pagination off
-set logging file out.txt
+set logging file sum_out.txt
 set logging overwrite
-set logging on
+set logging enabled on
 set prompt
 echo ------------------------------------ \n
-echo display variables \n
+echo Display sum of squares from 1 to 10 \n
 echo \n
-x/db &bResult
-x/dh &wResult
-x/dw &dResult
-x/dg &qResult
+x/dg &sum
 echo \n \n
-set logging off
+set logging enabled off
+continue
+quit

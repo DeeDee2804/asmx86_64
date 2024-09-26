@@ -1,0 +1,37 @@
+     1                                 %line 1+1 exercises/ex8.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 n equ 10
+    13                                 
+    14                                 
+    15 00000000 00000000               sum dd 0
+    16 00000004 00000000               squaredSum dd 0
+    17                                 
+    18                                 
+    19                                 [section .text]
+    20                                 [global _start]
+    21                                 _start:
+    22 00000000 BB01000000             mov ebx, 1
+    23 00000005 B90A000000             mov ecx, n
+    24                                 
+    25                                 startLoop:
+    26 0000000A 011C25[00000000]        add dword [sum], ebx
+    27 00000011 FFC3                    inc ebx
+    28 00000013 E2F3                    loop startLoop
+    29                                 
+    30 00000015 8B0425[00000000]       mov eax, dword [sum]
+    31 0000001C F7E0                   mul eax
+    32 0000001E 890425[00000000]       mov dword [squaredSum], eax
+    33                                 
+    34                                 last:
+    35 00000025 48C7C03C000000          mov rax, SYS_exit
+    36 0000002C 48C7C300000000          mov rbx, EXIT_SUCCESS
+    37 00000033 0F05                    syscall

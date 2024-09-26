@@ -1,0 +1,41 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break normalMul
+break signedMul
+break last
+run
+set pagination off
+set logging file mul_out.txt
+set logging overwrite
+set logging enabled on
+set prompt
+continue
+echo ------------------------------------ \n
+echo Display normal multiplication result \n
+echo \n
+x/dh &wAns
+x/dh &wAns1
+x/dw &dAns2
+x/dg &qAns3
+x/2dg &dqAns4
+echo \n \n
+
+continue
+echo ------------------------------------ \n
+echo Display signed multiplication result \n
+echo \n
+x/dh &wAns5
+echo The signed value in a shorter range type is wrong \n
+x/dh &wAns6
+echo The signed value in a sufficient range type is correct \n
+x/dw &dAns6
+x/dw &dAns7
+x/dw &dAns8
+x/dg &qAns9
+x/dg &qAns10
+echo \n \n
+set logging enabled off
+continue
+quit

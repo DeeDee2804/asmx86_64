@@ -1,0 +1,20 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file ex8_out.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display square of sum from 1 to 10 \n
+echo \n
+x/dw &sum
+x/dw &squaredSum
+echo \n \n
+set logging enabled off
+continue
+quit

@@ -1,0 +1,24 @@
+------------------------------------ 
+Display normal subtraction result 
+
+
+Breakpoint 2, decSub () at sub_example/sub_example.asm:56
+56	    dec     byte [bAns]
+0x402002:	-31
+0x402007:	3087
+0x402011:	-31000
+0x402025:	0
+
+ 
+------------------------------------ 
+Display decrement result 
+
+
+Breakpoint 3, last () at sub_example/sub_example.asm:65
+65	    mov     rax, SYS_exit       ; Call code for exit
+0x402002:	-32
+0x402007:	3086
+0x402011:	-31001
+0x402025:	-1
+
+ 

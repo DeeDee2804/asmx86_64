@@ -1,0 +1,39 @@
+     1                                 %line 1+1 sumofodd_example/sumofodd_example.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 
+    13                                 
+    14 00000000 0F00000000000000       lpCnt dq 15
+    15 00000008 0000000000000000       sum dq 0
+    16                                 
+    17                                 
+    18                                 [section .text]
+    19                                 [global _start]
+    20                                 _start:
+    21                                 
+    22 00000000 488B0C25[00000000]     mov rcx, qword [lpCnt]
+    23 00000008 48C7C001000000         mov rax, 1
+    24                                 
+    25                                 sumLoop:
+    26 0000000F 48010425[00000000]      add qword [sum], rax
+    27 00000017 4883C002                add rax, 2
+    28 0000001B 48FFC9                  dec rcx
+    29 0000001E 4883F900                cmp rcx, 0
+    30 00000022 75E9                    jne sumLoop
+    31                                 
+    32                                 
+    33                                 
+    34                                 
+    35                                 last:
+    36 00000024 48C7C03C000000          mov rax, SYS_exit
+    37 0000002B 48C7C300000000          mov rbx, EXIT_SUCCESS
+    38 00000032 0F05                    syscall
+    39                                 

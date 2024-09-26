@@ -1,0 +1,57 @@
+     1                                 %line 1+1 move_example/move_example.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [section .data]
+     9                                 
+    10                                 
+    11                                 EXIT_SUCCESS equ 0
+    12                                 SYS_exit equ 60
+    13                                 
+    14                                 
+    15 00000000 00000000               dValue dd 0
+    16 00000004 2A                     bNum db 42
+    17 00000005 8813                   wNum dw 5000
+    18 00000007 281D0100               dNum dd 73000
+    19 0000000B 40E4590400000000       qNum dq 73000000
+    20 00000013 00                     bAns db 0
+    21 00000014 0000                   wAns dw 0
+    22 00000016 00000000               dAns dd 0
+    23 0000001A 0000000000000000       qAns dq 0
+    24                                 
+    25                                 
+    26                                 
+    27                                 [section .text]
+    28                                 [global _start]
+    29                                 _start:
+    30                                 
+    31                                 
+    32 00000000 C70425[00000000]1B-    mov dword [dValue], 27
+    33 00000000 000000             
+    34                                 
+    35                                 
+    36 0000000B 8A0425[00000000]       mov al, byte [bNum]
+    37 00000012 880425[00000000]       mov byte [bAns], al
+    38                                 
+    39                                 
+    40 00000019 668B0425[00000000]     mov ax, word [wNum]
+    41 00000021 66890425[00000000]     mov word [wAns], ax
+    42                                 
+    43                                 
+    44 00000029 8B0425[00000000]       mov eax, dword [dNum]
+    45 00000030 890425[00000000]       mov dword [dAns], eax
+    46                                 
+    47                                 
+    48 00000037 488B0425[00000000]     mov rax, qword [qNum]
+    49 0000003F 48890425[00000000]     mov qword [qAns], rax
+    50                                 
+    51                                 
+    52                                 
+    53                                 
+    54                                 last:
+    55 00000047 48C7C03C000000          mov rax, SYS_exit
+    56 0000004E 48C7C300000000          mov rbx, EXIT_SUCCESS
+    57 00000055 0F05                    syscall

@@ -1,0 +1,126 @@
+     1                                 %line 1+1 mul_example/mul_example.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 EXIT_SUCCESS equ 0
+    11                                 SYS_exit equ 60
+    12                                 
+    13                                 
+    14 00000000 2A                     bNum1 db 42
+    15 00000001 49                     bNum2 db 73
+    16 00000002 0000                   wAns dw 0
+    17 00000004 0000                   wAns1 dw 0
+    18                                 
+    19 00000006 E110                   wNum1 dw 4321
+    20 00000008 D204                   wNum2 dw 1234
+    21 0000000A 00000000               dAns2 dd 0
+    22                                 
+    23 0000000E 10A40000               dNum1 dd 42000
+    24 00000012 281D0100               dNum2 dd 73000
+    25 00000016 0000000000000000       qAns3 dq 0
+    26                                 
+    27 0000001E 80DE800200000000       qNum1 dq 42000000
+    28 00000026 40E4590400000000       qNum2 dq 73000000
+    29 0000002E 000000000000000000-    dqAns4 ddq 0
+    30 0000002E 00000000000000     
+    31                                 
+    32 0000003E B004                   wNumA dw 1200
+    33 00000040 30F8                   wNumB dw -2000
+    34 00000042 0000                   wAns5 dw 0
+    35 00000044 0000                   wAns6 dw 0
+    36 00000046 00000000               dAns6 dd 0
+    37                                 
+    38 0000004A 10A40000               dNumA dd 42000
+    39 0000004E 38CDFFFF               dNumB dd -13000
+    40 00000052 00000000               dAns7 dd 0
+    41 00000056 00000000               dAns8 dd 0
+    42                                 
+    43 0000005A C0D4010000000000       qNumA dq 120000
+    44 00000062 907DFCFFFFFFFFFF       qNumB dq -230000
+    45 0000006A 0000000000000000       qAns9 dq 0
+    46 00000072 0000000000000000       qAns10 dq 0
+    47                                 
+    48                                 
+    49                                 [section .text]
+    50                                 [global _start]
+    51                                 _start:
+    52                                 
+    53                                 normalMul:
+    54                                 
+    55 00000000 8A0425[00000000]        mov al, byte [bNum1]
+    56 00000007 F62425[00000000]        mul byte [bNum1]
+    57 0000000E 66890425[00000000]      mov word [wAns], ax
+    58                                 
+    59                                 
+    60 00000016 8A0425[00000000]        mov al, byte [bNum1]
+    61 0000001D F62425[00000000]        mul byte [bNum2]
+    62 00000024 66890425[00000000]      mov word [wAns1], ax
+    63                                 
+    64                                 
+    65 0000002C 668B0425[00000000]      mov ax, word [wNum1]
+    66 00000034 66F72425[00000000]      mul word [wNum2]
+    67 0000003C 66890425[00000000]      mov word [dAns2], ax
+    68 00000044 66891425[02000000]      mov word [dAns2+2], dx
+    69                                 
+    70                                 
+    71 0000004C 8B0425[00000000]        mov eax, dword [dNum1]
+    72 00000053 F72425[00000000]        mul dword [dNum2]
+    73 0000005A 890425[00000000]        mov dword [qAns3], eax
+    74 00000061 891425[04000000]        mov dword [qAns3+4], edx
+    75                                 
+    76                                 
+    77 00000068 488B0425[00000000]      mov rax, qword [qNum1]
+    78 00000070 48F72425[00000000]      mul qword [qNum2]
+    79 00000078 48890425[00000000]      mov qword [dqAns4], rax
+    80 00000080 48891425[08000000]      mov qword [dqAns4+8], rdx
+    81                                 
+    82                                 signedMul:
+    83                                 
+    84 00000088 668B0425[00000000]      mov ax, word [wNumA]
+    85 00000090 666BC0F3                imul ax, -13
+    86 00000094 66890425[00000000]      mov word [wAns5], ax
+    87                                 
+    88                                 
+    89 0000009C 668B0425[00000000]      mov ax, word [wNumA]
+    90 000000A4 660FAF0425[00000000]      imul ax, word [wNumB]
+    91 000000AD 66890425[00000000]      mov word [wAns6], ax
+    92                                 
+    93                                 
+    94 000000B5 668B0425[00000000]      mov ax, word [wNumA]
+    95 000000BD 66F72C25[00000000]      imul word [wNumB]
+    96 000000C5 66890425[00000000]      mov word [dAns6], ax
+    97 000000CD 66891425[02000000]      mov word [dAns6+2], dx
+    98                                 
+    99                                 
+   100 000000D5 8B0425[00000000]        mov eax, dword [dNumA]
+   101 000000DC 6BC071                  imul eax, 113
+   102 000000DF 890425[00000000]        mov dword [dAns7], eax
+   103                                 
+   104                                 
+   105 000000E6 8B0425[00000000]        mov eax, dword [dNumA]
+   106 000000ED 0FAF0425[00000000]      imul eax, dword [dNumB]
+   107 000000F5 890425[00000000]        mov dword [dAns8], eax
+   108                                 
+   109                                 
+   110 000000FC 488B0425[00000000]      mov rax, qword [qNumA]
+   111 00000104 4869C0B81B0000          imul rax, 7096
+   112 0000010B 48890425[00000000]      mov qword [qAns9], rax
+   113                                 
+   114                                 
+   115 00000113 488B0425[00000000]      mov rax, qword [qNumA]
+   116 0000011B 480FAF0425[00000000]      imul rax, qword [qNumB]
+   117 00000124 48890425[00000000]      mov qword [qAns10], rax
+   118                                 
+   119                                 
+   120                                 
+   121                                 
+   122                                 
+   123                                 last:
+   124 0000012C 48C7C03C000000          mov rax, SYS_exit
+   125 00000133 48C7C300000000          mov rbx, EXIT_SUCCESS
+   126 0000013A 0F05                    syscall

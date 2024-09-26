@@ -1,0 +1,35 @@
+------------------------------------ 
+Display normal addition result 
+
+
+Breakpoint 2, incAdd () at add_example/add_example.asm:60
+60	    inc     byte [bAns]
+0x402002:	115
+0x402007:	5555
+0x402011:	115000
+0x402025:	115000000
+
+ 
+------------------------------------ 
+Display increment addition result 
+
+
+Breakpoint 3, carryAdd () at add_example/add_example.asm:67
+67	    mov     rax, qword [dquad1]
+0x402002:	116
+0x402007:	5556
+0x402011:	115001
+0x402025:	115000001
+
+ 
+------------------------------------ 
+Display carry addition result 
+
+
+Breakpoint 4, last () at add_example/add_example.asm:78
+78	    mov     rax, SYS_exit       ; Call code for exit
+0x40202d:	0xa000000000000000	0x0000000000000001
+0x40203d:	0xc000000000000000	0x0000000000000002
+0x40204d:	0x6000000000000000	0x0000000000000004
+
+ 
