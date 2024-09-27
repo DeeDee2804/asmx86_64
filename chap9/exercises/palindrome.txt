@@ -1,0 +1,8 @@
+(gdb) ------------------------------------ 
+Display original string and res if it is palindrome 
+
+0x402000:	"hannah"
+0x402008:	"hanna"
+0x402011:	1
+
+ 

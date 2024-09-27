@@ -1,0 +1,21 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file palindrome.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display original string and res if it is palindrome \n
+echo \n
+x/sb &string1
+x/sb &string2
+x/db &res
+echo \n \n
+set logging enabled off
+continue
+quit

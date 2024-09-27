@@ -1,0 +1,2 @@
+The ddd debug requires the code section before last must have
+at least 2 instructions before go to last label.

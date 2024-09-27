@@ -1,0 +1,60 @@
+     1                                 %line 1+1 palindrome.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 
+    17                                 
+    18 00000000 68616E6E616800         string1 db "hannah", 0
+    19 00000007 06                     len1 db 6
+    20 00000008 68616E6E61000000       string2 dw 'hanna', 0
+    21 00000010 05                     len2 db 5
+    22 00000011 01                     res db 1
+    23                                 
+    24                                 
+    25                                 [section .text]
+    26                                 [global _start]
+    27                                 _start:
+    28 00000000 480FB60C25[00000000]     movzx rcx, byte [len1]
+    29 00000009 48C7C600000000         mov rsi, 0
+    30 00000010 48C7C3[00000000]       mov rbx, string1
+    31 00000017 48C7C000000000         mov rax, 0
+    32                                 
+    33                                 
+    34                                 
+    35                                 pushLoop:
+    36 0000001E 480FB60433              movzx rax, byte [rbx+rsi]
+    37 00000023 50                      push rax
+    38 00000024 48FFC6                  inc rsi
+    39 00000027 E2F3                    loop pushLoop
+    40                                 
+    41 00000029 480FB60C25[00000000]     movzx rcx, byte [len1]
+    42 00000032 48C7C600000000         mov rsi, 0
+    43                                 popLoop:
+    44 00000039 58                      pop rax
+    45 0000003A 380433                  cmp byte [rbx+rsi], al
+    46 0000003D 7505                    jne notPalindrome
+    47 0000003F 48FFC6                  inc rsi
+    48 00000042 E2F3                    loop popLoop
+    49 00000044 EB06                   jmp last
+    50                                 
+    51                                 notPalindrome:
+    52 00000046 C60425[00000000]00      mov byte [res], 0
+    53                                 
+    54                                 
+    55                                 
+    56                                 last:
+    57 0000004E 48C7C03C000000          mov rax, SYS_exit
+    58 00000055 48C7C300000000          mov rbx, EXIT_SUCCESS
+    59 0000005C 0F05                    syscall
+    60                                 

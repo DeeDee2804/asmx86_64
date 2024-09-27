@@ -1,0 +1,106 @@
+     1                                 %line 1+1 palindrome_general.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 MAX_LOOP equ 100
+    17                                 
+    18                                 
+    19 00000000 61206D616E2C206120-    input_string db 'a man, a plan, a canal - panama!', 0
+    20 00000000 706C616E2C20612063-
+    21 00000000 616E616C202D207061-
+    22 00000000 6E616D612100       
+    23 00000021 00                     len db 0
+    24 00000022 01                     res db 1
+    25                                 
+    26                                 
+    27                                 [section .bss]
+    28                                 
+    29                                 
+    30 00000000 <gap>                  formated_string resb 30
+    31                                 
+    32                                 
+    33                                 
+    34                                 [section .text]
+    35                                 [global _start]
+    36                                 _start:
+    37                                 
+    38 00000000 48C7C600000000         mov rsi, 0
+    39 00000007 48C7C700000000         mov rdi, 0
+    40 0000000E 48C7C3[00000000]       mov rbx, input_string
+    41 00000015 48C7C1[00000000]       mov rcx, formated_string
+    42                                 lenLoop:
+    43 0000001C 8A0433                  mov al, byte [rbx+rsi]
+    44                                 
+    45 0000001F 3C00                    cmp al, 0
+    46 00000021 742C                    je endString
+    47                                 
+    48 00000023 3C20                    cmp al, ' '
+    49 00000025 741D                    je endLoop
+    50 00000027 3C21                    cmp al, '!'
+    51 00000029 7419                    je endLoop
+    52 0000002B 3C2D                    cmp al, '-'
+    53 0000002D 7415                    je endLoop
+    54 0000002F 3C2C                    cmp al, ','
+    55 00000031 7411                    je endLoop
+    56                                 
+    57 00000033 480FB63C25[00000000]      movzx rdi, byte [len]
+    58 0000003C 880439                  mov byte [rcx+rdi], al
+    59 0000003F FE0425[00000000]        inc byte [len]
+    60                                 endLoop:
+    61 00000046 48FFC6                  inc rsi
+    62                                 
+    63 00000049 4883FE64                cmp rsi, MAX_LOOP
+    64 0000004D 7400                    je endString
+    65 0000004F EBC9                    jmp lenLoop
+    66                                 
+    67                                 
+    68                                 endString:
+    69 00000051 480FB63C25[00000000]      movzx rdi, byte [len]
+    70 0000005A C687[00000000]00        mov byte [formated_string+rdi], 0
+    71                                 
+    72                                 
+    73                                 
+    74 00000061 480FB60C25[00000000]     movzx rcx, byte [len]
+    75 0000006A 48C7C600000000         mov rsi, 0
+    76 00000071 48C7C3[00000000]       mov rbx, formated_string
+    77 00000078 48C7C000000000         mov rax, 0
+    78                                 
+    79                                 
+    80                                 
+    81                                 pushLoop:
+    82 0000007F 480FB60433              movzx rax, byte [rbx+rsi]
+    83 00000084 50                      push rax
+    84 00000085 48FFC6                  inc rsi
+    85 00000088 E2F3                    loop pushLoop
+    86                                 
+    87 0000008A 480FB60C25[00000000]     movzx rcx, byte [len]
+    88 00000093 48C7C600000000         mov rsi, 0
+    89                                 popLoop:
+    90 0000009A 58                      pop rax
+    91 0000009B 380433                  cmp byte [rbx+rsi], al
+    92 0000009E 7505                    jne notPalindrome
+    93 000000A0 48FFC6                  inc rsi
+    94 000000A3 E2F3                    loop popLoop
+    95 000000A5 EB06                   jmp last
+    96                                 
+    97                                 notPalindrome:
+    98 000000A7 C60425[00000000]00      mov byte [res], 0
+    99                                 
+   100                                 
+   101                                 
+   102                                 last:
+   103 000000AF 48C7C03C000000          mov rax, SYS_exit
+   104 000000B6 48C7C300000000          mov rbx, EXIT_SUCCESS
+   105 000000BD 0F05                    syscall
+   106                                 

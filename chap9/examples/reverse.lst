@@ -1,0 +1,63 @@
+     1                                 %line 1+1 reverse.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 
+    17                                 
+    18 00000000 79000000000000007A-    numbers dq 121, 122, 123, 124, 125
+    19 00000000 000000000000007B00-
+    20 00000000 0000000000007C0000-
+    21 00000000 00000000007D000000-
+    22 00000000 00000000           
+    23 00000028 0500000000000000       len dq 5
+    24                                 
+    25                                 
+    26                                 
+    27                                 [section .text]
+    28                                 [global _start]
+    29                                 _start:
+    30                                 
+    31                                 
+    32                                 
+    33 00000000 488B0C25[00000000]     mov rcx, qword [len]
+    34 00000008 48C7C3[00000000]       mov rbx, numbers
+    35 0000000F 49C7C400000000         mov r12, 0
+    36 00000016 48C7C000000000         mov rax, 0
+    37                                 
+    38                                 pushLoop:
+    39 0000001D 42FF34E3                push qword [rbx+r12*8]
+    40 00000021 49FFC4                  inc r12
+    41 00000024 E2F5                    loop pushLoop
+    42                                 
+    43                                 
+    44                                 
+    45                                 
+    46                                 
+    47 00000026 488B0C25[00000000]     mov rcx, qword [len]
+    48 0000002E 49C7C400000000         mov r12, 0
+    49                                 
+    50                                 popLoop:
+    51 00000035 58                      pop rax
+    52 00000036 4A8904E3                mov qword [rbx+r12*8], rax
+    53 0000003A 49FFC4                  inc r12
+    54 0000003D E2F4                    loop popLoop
+    55                                 
+    56                                 
+    57                                 
+    58                                 
+    59                                 last:
+    60 0000003F 48C7C03C000000          mov rax, SYS_exit
+    61 00000046 48C7C300000000          mov rbx, EXIT_SUCCESS
+    62 0000004D 0F05                    syscall
+    63                                 

@@ -1,0 +1,9 @@
+(gdb) ------------------------------------ 
+Display original string and res if it is palindrome 
+
+0x402000:	"a man, a plan, a canal - panama!"
+0x402024:	"amanaplanacanalpanama"
+0x402021:	21
+0x402022:	1
+
+ 
