@@ -1,0 +1,9 @@
+(gdb) ------------------------------------ 
+Display the origin string 
+
+0x402000:	"-123456"
+Display the converted integer 
+
+0x402008:	-123456
+
+ 

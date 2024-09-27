@@ -1,0 +1,103 @@
+     1                                 %line 1+1 str2int.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [section .data]
+    11                                 
+    12                                 
+    13                                 
+    14                                 NULL equ 0
+    15                                 EXIT_SUCCESS equ 0
+    16                                 EXIT_FAILURE equ 1
+    17                                 SYS_exit equ 60
+    18                                 MAX_LOOP equ 100
+    19                                 
+    20                                 
+    21 00000000 2D31323334353600       strNum db '-123456', NULL
+    22 00000008 0000000000000000       intNum dq 0
+    23                                 
+    24                                 
+    25                                 
+    26                                 [section .text]
+    27                                 [global _start]
+    28                                 _start:
+    29                                 
+    30                                 
+    31                                 
+    32                                 
+    33 00000000 49C7C00A000000         mov r8, 10
+    34                                 
+    35 00000007 49C7C101000000         mov r9, 1
+    36                                 
+    37 0000000E 48C7C3[00000000]       mov rbx, strNum
+    38                                 
+    39                                 
+    40 00000015 803C25[00000000]2D     cmp byte [strNum], '-'
+    41 0000001D 740A                   je isNeg
+    42 0000001F 803C25[00000000]2B     cmp byte [strNum], '+'
+    43 00000027 7406                   je updateBase
+    44 00000029 EB07                   jmp extractNum
+    45                                 
+    46                                 isNeg:
+    47 0000002B 49F7D1                 not r9
+    48 0000002E 49FFC1                 inc r9
+    49                                 updateBase:
+    50 00000031 48FFC3                 inc rbx
+    51                                 
+    52                                 
+    53                                 extractNum:
+    54 00000034 48C7C100000000          mov rcx, 0
+    55                                 
+    56                                 extractLoop:
+    57 0000003B 8A040B                  mov al, byte [rbx+rcx]
+    58 0000003E 3C00                    cmp al, 0
+    59 00000040 7418                    je aggregate
+    60 00000042 3C30                    cmp al, '0'
+    61 00000044 7237                    jb error
+    62 00000046 3C39                    cmp al, '9'
+    63 00000048 7733                    ja error
+    64 0000004A 2C30                    sub al, '0'
+    65 0000004C 480FB6C0                movzx rax, al
+    66                                 
+    67 00000050 50                      push rax
+    68                                 
+    69 00000051 48FFC1                  inc rcx
+    70 00000054 4883F964                cmp rcx, MAX_LOOP
+    71 00000058 7423                    je error
+    72 0000005A EBDD                    jmp extractLoop
+    73                                 
+    74                                 
+    75                                 
+    76                                 aggregate:
+    77                                 
+    78 0000005C 48C7C300000000         mov rbx, 0
+    79                                 
+    80                                 sumLoop:
+    81 00000063 58                      pop rax
+    82                                 
+    83 00000064 49F7E9                  imul r9
+    84 00000067 4801C3                  add rbx, rax
+    85                                 
+    86 0000006A 4C89C8                  mov rax, r9
+    87 0000006D 49F7E8                  imul r8
+    88 00000070 4989C1                  mov r9, rax
+    89 00000073 E2EC                    loop sumLoop
+    90                                 
+    91 00000075 48891C25[00000000]     mov qword [intNum], rbx
+    92 0000007D EB0E                   jmp last
+    93                                 
+    94                                 error:
+    95 0000007F 48C7C03C000000          mov rax, SYS_exit
+    96 00000086 48C7C301000000          mov rbx, EXIT_FAILURE
+    97 0000008D 0F05                    syscall
+    98                                 
+    99                                 
+   100                                 last:
+   101 0000008F 48C7C03C000000          mov rax, SYS_exit
+   102 00000096 48C7C300000000          mov rbx, EXIT_SUCCESS
+   103 0000009D 0F05                    syscall

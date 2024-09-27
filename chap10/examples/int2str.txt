@@ -1,0 +1,9 @@
+(gdb) ------------------------------------ 
+Display the origin number 
+
+0x402000:	1498
+Display the converted string 
+
+0x402004:	"1498"
+
+ 

@@ -1,0 +1,9 @@
+(gdb) ------------------------------------ 
+Display the origin number 
+
+0x402000:	-123456
+Display the converted string 
+
+0x40200c:	"-123456"
+
+ 
