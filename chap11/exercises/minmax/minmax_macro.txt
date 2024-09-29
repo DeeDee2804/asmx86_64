@@ -1,0 +1,11 @@
+(gdb) ------------------------------------ 
+Display the min max of list1 
+
+0x402018:	-3
+0x40201c:	5
+Display the min max of list2 
+
+0x402040:	-2
+0x402044:	19
+
+ 

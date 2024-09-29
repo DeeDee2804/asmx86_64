@@ -1,0 +1,26 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break _start
+break last
+run
+set pagination off
+set logging file mul2_macro.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the list before: \n
+echo \n
+x/5dw &list1
+x/7dw &list2
+continue
+echo Display the list after \n
+echo \n
+x/5dw &list1
+x/7dw &list2
+echo \n \n
+set logging enabled off
+continue
+quit

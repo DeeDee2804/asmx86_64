@@ -1,0 +1,19 @@
+(gdb) ------------------------------------ 
+Display the list before: 
+
+0x402000:	4	5	2	-3
+0x402010:	1
+0x402018:	2	6	3	-2
+0x402028:	1	8	19
+Continuing.
+
+Breakpoint 2, last () at mul2_macro.asm:51
+51	    mov     eax, SYS_exit
+Display the list after 
+
+0x402000:	8	10	4	-6
+0x402010:	2
+0x402018:	8	24	12	-8
+0x402028:	4	32	76
+
+ 

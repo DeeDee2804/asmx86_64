@@ -1,0 +1,73 @@
+     1                                 %line 1+1 ave_macro.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 %line 23+1 ave_macro.asm
+    11                                 
+    12                                 
+    13                                 
+    14                                 [section .data]
+    15                                 
+    16                                 
+    17                                 
+    18                                 EXIT_SUCCESS equ 0
+    19                                 SYS_exit equ 60
+    20                                 
+    21                                 
+    22 00000000 040000000500000002-    list1 dd 4, 5, 2, -3, 1
+    23 00000000 000000FDFFFFFF0100-
+    24 00000000 0000               
+    25 00000014 05000000               len1 dd 5
+    26 00000018 00000000               ave1 dd 0
+    27                                 
+    28 0000001C 020000000600000003-    list2 dd 2, 6, 3, -2, 1, 8, 19
+    29 0000001C 000000FEFFFFFF0100-
+    30 0000001C 000008000000130000-
+    31 0000001C 00                 
+    32 00000038 07000000               len2 dd 7
+    33 0000003C 00000000               ave2 dd 0
+    34                                 
+    35                                 
+    36                                 
+    37                                 [section .text]
+    38                                 [global _start]
+    39                                 _start:
+    40 00000000 B800000000              mov eax, 0
+    41                                 %line 47+0 ave_macro.asm
+    42 00000005 8B0C25[00000000]        mov ecx, dword [len1]
+    43 0000000C 49C7C400000000          mov r12, 0
+    44 00000013 488D1C25[00000000]      lea rbx, [list1]
+    45                                 ..@3.sumLoop:
+    46 0000001B 420304A3                add eax, dword [rbx+r12*4]
+    47 0000001F 49FFC4                  inc r12
+    48 00000022 E2F5                    loop ..@3.sumLoop
+    49                                 
+    50 00000024 99                      cdq
+    51 00000025 F73C25[00000000]        idiv dword [len1]
+    52 0000002C 890425[00000000]        mov dword [ave1], eax
+    53                                 %line 48+1 ave_macro.asm
+    54 00000033 B800000000              mov eax, 0
+    55                                 %line 48+0 ave_macro.asm
+    56 00000038 8B0C25[00000000]        mov ecx, dword [len2]
+    57 0000003F 49C7C400000000          mov r12, 0
+    58 00000046 488D1C25[00000000]      lea rbx, [list2]
+    59                                 ..@4.sumLoop:
+    60 0000004E 420304A3                add eax, dword [rbx+r12*4]
+    61 00000052 49FFC4                  inc r12
+    62 00000055 E2F5                    loop ..@4.sumLoop
+    63                                 
+    64 00000057 99                      cdq
+    65 00000058 F73C25[00000000]        idiv dword [len2]
+    66 0000005F 890425[00000000]        mov dword [ave2], eax
+    67                                 %line 49+1 ave_macro.asm
+    68                                 
+    69                                 
+    70                                 last:
+    71 00000066 B83C000000              mov eax, SYS_exit
+    72 0000006B BB00000000              mov ebx, EXIT_SUCCESS
+    73 00000070 0F05                    syscall

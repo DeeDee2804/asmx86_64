@@ -1,0 +1,17 @@
+(gdb) ------------------------------------ 
+Display the num before: 
+
+0x402000:	1234
+0x402004:	10000
+0x402008:	0
+Continuing.
+
+Breakpoint 2, last () at int2str_macro.asm:71
+71	    mov     eax, SYS_exit
+Display the string after 
+
+0x40200c:	"1234"
+0x402013:	"10000"
+0x40201a:	"0"
+
+ 

@@ -1,0 +1,83 @@
+     1                                 %line 1+1 mul2_macro.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 %line 22+1 mul2_macro.asm
+    11                                 
+    12                                 
+    13                                 
+    14                                 [section .data]
+    15                                 
+    16                                 
+    17                                 
+    18                                 EXIT_SUCCESS equ 0
+    19                                 SYS_exit equ 60
+    20                                 
+    21                                 
+    22 00000000 040000000500000002-    list1 dd 4, 5, 2, -3, 1
+    23 00000000 000000FDFFFFFF0100-
+    24 00000000 0000               
+    25 00000014 05000000               len1 dd 5
+    26                                 
+    27 00000018 020000000600000003-    list2 dd 2, 6, 3, -2, 1, 8, 19
+    28 00000018 000000FEFFFFFF0100-
+    29 00000018 000008000000130000-
+    30 00000018 00                 
+    31 00000034 07000000               len2 dd 7
+    32                                 
+    33                                 
+    34                                 
+    35                                 
+    36                                 [section .text]
+    37                                 [global _start]
+    38                                 _start:
+    39 00000000 41B802000000            mov r8d, 2
+    40                                 %line 45+0 mul2_macro.asm
+    41 00000006 48C7C600000000          mov rsi, 0
+    42 0000000D 8B0C25[00000000]        mov ecx, dword [len1]
+    43 00000014 488D1C25[00000000]      lea rbx, [list1]
+    44                                 ..@3.mulLoop:
+    45 0000001C 8B04B3                  mov eax, dword [rbx+rsi*4]
+    46 0000001F 99                      cdq
+    47 00000020 41F7E8                  imul r8d
+    48 00000023 8904B3                  mov dword [rbx+rsi*4], eax
+    49 00000026 48FFC6                  inc rsi
+    50 00000029 E2EF                    loop ..@3.mulLoop
+    51                                 %line 46+1 mul2_macro.asm
+    52 0000002B 41B802000000            mov r8d, 2
+    53                                 %line 46+0 mul2_macro.asm
+    54 00000031 48C7C600000000          mov rsi, 0
+    55 00000038 8B0C25[00000000]        mov ecx, dword [len2]
+    56 0000003F 488D1C25[00000000]      lea rbx, [list2]
+    57                                 ..@4.mulLoop:
+    58 00000047 8B04B3                  mov eax, dword [rbx+rsi*4]
+    59 0000004A 99                      cdq
+    60 0000004B 41F7E8                  imul r8d
+    61 0000004E 8904B3                  mov dword [rbx+rsi*4], eax
+    62 00000051 48FFC6                  inc rsi
+    63 00000054 E2EF                    loop ..@4.mulLoop
+    64                                 %line 47+1 mul2_macro.asm
+    65 00000056 41B802000000            mov r8d, 2
+    66                                 %line 47+0 mul2_macro.asm
+    67 0000005C 48C7C600000000          mov rsi, 0
+    68 00000063 8B0C25[00000000]        mov ecx, dword [len2]
+    69 0000006A 488D1C25[00000000]      lea rbx, [list2]
+    70                                 ..@5.mulLoop:
+    71 00000072 8B04B3                  mov eax, dword [rbx+rsi*4]
+    72 00000075 99                      cdq
+    73 00000076 41F7E8                  imul r8d
+    74 00000079 8904B3                  mov dword [rbx+rsi*4], eax
+    75 0000007C 48FFC6                  inc rsi
+    76 0000007F E2EF                    loop ..@5.mulLoop
+    77                                 %line 48+1 mul2_macro.asm
+    78                                 
+    79                                 
+    80                                 last:
+    81 00000081 B83C000000              mov eax, SYS_exit
+    82 00000086 BB00000000              mov ebx, EXIT_SUCCESS
+    83 0000008B 0F05                    syscall

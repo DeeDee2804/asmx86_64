@@ -1,0 +1,22 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file ave_macro.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the average of list1 \n
+echo \n
+x/dw &ave1
+echo Display the average of list2 \n
+echo \n
+x/dw &ave2
+echo \n \n
+set logging enabled off
+continue
+quit

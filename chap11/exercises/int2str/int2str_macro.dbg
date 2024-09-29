@@ -1,0 +1,28 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break _start
+break last
+run
+set pagination off
+set logging file int2str_macro.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the num before: \n
+echo \n
+x/dw &num1
+x/dw &num2
+x/dw &num3
+continue
+echo Display the string after \n
+echo \n
+x/s &str1
+x/s &str2
+x/s &str3
+echo \n \n
+set logging enabled off
+continue
+quit
