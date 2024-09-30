@@ -1,0 +1,11 @@
+(gdb) ------------------------------------ 
+Display the sum, average of list1 
+
+0x402018:	9
+0x40201c:	1
+Display the sum, average of list2 
+
+0x402040:	37
+0x402044:	5
+
+ 

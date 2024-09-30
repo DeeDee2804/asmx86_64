@@ -1,0 +1,279 @@
+     1                                 %line 1+1 convert.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 
+    15                                 EXIT_SUCCESS equ 0
+    16                                 SYS_exit equ 60
+    17                                 NULL equ 0
+    18                                 TRUE equ 1
+    19                                 FALSE equ 0
+    20                                 
+    21                                 
+    22 00000000 FC080000               num1 dd 2300
+    23 00000004 0080FFFF               num2 dd -32768
+    24 00000008 9BFFFFFF               num3 dd -101
+    25 0000000C 202D3134353600         teststr1 db ' -1456', NULL
+    26 00000013 20202B323334353800     teststr2 db '  +23458', NULL
+    27 0000001C 2C31303100             teststr3 db ',101', NULL
+    28 00000021 3132616200             teststr4 db '12ab', NULL
+    29 00000026 00000000               testint1 dd 0
+    30 0000002A 00000000               testint2 dd 0
+    31 0000002E 00000000               testint3 dd 0
+    32 00000032 00000000               testint4 dd 0
+    33 00000036 00                     testret1 db 0
+    34 00000037 00                     testret2 db 0
+    35 00000038 00                     testret3 db 0
+    36 00000039 00                     testret4 db 0
+    37 0000003A 04000000               len dd 4
+    38                                 
+    39                                 
+    40                                 
+    41                                 [section .bss]
+    42                                 
+    43 00000000 <gap>                  str1 resd 10
+    44 00000028 <gap>                  str2 resd 10
+    45 00000050 <gap>                  str3 resd 10
+    46                                 
+    47                                 
+    48                                 
+    49                                 [section .text]
+    50                                 
+    51                                 
+    52                                 
+    53                                 
+    54                                 
+    55                                 
+    56                                 
+    57                                 
+    58                                 
+    59                                 
+    60                                 
+    61                                 
+    62                                 [global int2str]
+    63                                 int2str:
+    64                                 
+    65 00000000 55                      push rbp
+    66 00000001 4889E5                  mov rbp, rsp
+    67                                 
+    68 00000004 4883EC01                sub rsp, 1
+    69 00000008 53                      push rbx
+    70                                 
+    71 00000009 4989D2                  mov r10, rdx
+    72                                 
+    73                                 
+    74 0000000C 83FF00                  cmp edi, 0
+    75 0000000F 7D02                    jge division
+    76                                 
+    77 00000011 C645FF01                mov byte [rbp-1], 1
+    78                                 
+    79                                 
+    80                                 division:
+    81 00000015 89F8                    mov eax, edi
+    82 00000017 48C7C100000000          mov rcx, 0
+    83 0000001E 48C7C30A000000          mov rbx, 10
+    84                                 
+    85                                 divideLoop:
+    86                                 
+    87 00000025 99                      cdq
+    88 00000026 F7FB                    idiv ebx
+    89                                 
+    90 00000028 52                      push rdx
+    91                                 
+    92 00000029 48FFC1                  inc rcx
+    93                                 
+    94 0000002C 83F800                  cmp eax, 0
+    95 0000002F 75F2                    jne divideLoop
+    96                                 
+    97                                 
+    98                                 
+    99 00000031 48C7C700000000          mov rdi, 0
+   100 00000038 4989CB                  mov r11, rcx
+   101                                 
+   102 0000003B 4983C302                add r11, 2
+   103 0000003F 4D39DA                  cmp r10, r11
+   104 00000042 7D07                    jge blanklLoop
+   105 00000044 4983EA02                sub r10, 2
+   106 00000048 4C89D1                  mov rcx, r10
+   107 0000004B EB0F                    jmp addSign
+   108                                 
+   109                                 
+   110                                 blanklLoop:
+   111 0000004D 4D39D3                  cmp r11, r10
+   112 00000050 740A                    je addSign
+   113 00000052 C6043E20                mov byte [rsi+rdi], ' '
+   114 00000056 49FFC3                  inc r11
+   115 00000059 48FFC7                  inc rdi
+   116 0000005C EBED                    jmp blanklLoop
+   117                                 
+   118                                 addSign:
+   119 0000005E 807DFF00                cmp byte [rbp-1], 0
+   120                                 
+   121 00000062 7404                    je addPlusSign
+   122 00000064 C6043E2D                mov byte [rsi+rdi], '-'
+   123 00000068 EB02                    jmp popLoop
+   124                                 
+   125                                 addPlusSign:
+   126 0000006A C6043E2B                mov byte [rsi+rdi], '+'
+   127                                 
+   128                                 popLoop:
+   129 0000006E 48FFC7                  inc rdi
+   130 00000071 58                      pop rax
+   131                                 
+   132 00000072 807DFF00                cmp byte [rbp-1], 0
+   133 00000076 7400                    je addAbs
+   134 00000078 F6D8                    neg al
+   135                                 addAbs:
+   136 0000007A 0430                    add al, '0'
+   137 0000007C 88043E                  mov byte [rsi+rdi], al
+   138 0000007F E2EB                    loop popLoop
+   139                                 
+   140 00000081 C6443E0100              mov byte [rsi+rdi+1], NULL
+   141                                 
+   142                                 
+   143 00000086 5B                      pop rbx
+   144 00000087 4889EC                  mov rsp, rbp
+   145 0000008A 5D                      pop rbp
+   146 0000008B C3                     ret
+   147                                 
+   148                                 
+   149                                 
+   150                                 
+   151                                 
+   152                                 
+   153                                 
+   154                                 
+   155                                 
+   156                                 
+   157                                 
+   158                                 
+   159                                 [global str2int]
+   160                                 str2int:
+   161                                 
+   162 0000008C 53                      push rbx
+   163                                 
+   164 0000008D 49C7C20A000000          mov r10, 10
+   165                                 
+   166 00000094 49C7C301000000          mov r11, 1
+   167                                 
+   168                                 
+   169                                 extractSign:
+   170 0000009B 803F2D                  cmp byte [rdi], '-'
+   171 0000009E 740D                    je isNeg
+   172 000000A0 803F2B                  cmp byte [rdi], '+'
+   173 000000A3 740B                    je updateBase
+   174 000000A5 803F20                  cmp byte [rdi], ' '
+   175 000000A8 754F                    jne invalidStr
+   176 000000AA 48FFC7                  inc rdi
+   177 000000AD EBEA                    jmp extractSign
+   178                                 
+   179                                 
+   180                                  isNeg:
+   181 000000AF 49F7DB                  neg r11
+   182                                 
+   183                                  updateBase:
+   184 000000B2 48FFC7                  inc rdi
+   185                                 
+   186                                 
+   187                                 extractNum:
+   188 000000B5 48C7C100000000          mov rcx, 0
+   189                                 
+   190                                 extractLoop:
+   191 000000BC 8A040F                  mov al, byte [rdi+rcx]
+   192 000000BF 3C00                    cmp al, NULL
+   193 000000C1 7412                    je aggregate
+   194 000000C3 3C30                    cmp al, '0'
+   195 000000C5 7232                    jb invalidStr
+   196 000000C7 3C39                    cmp al, '9'
+   197 000000C9 772E                    ja invalidStr
+   198 000000CB 2C30                    sub al, '0'
+   199 000000CD 480FB6C0                movzx rax, al
+   200                                 
+   201 000000D1 50                      push rax
+   202                                 
+   203 000000D2 48FFC1                  inc rcx
+   204 000000D5 EBE3                    jmp extractLoop
+   205                                 
+   206                                 
+   207                                 
+   208                                 aggregate:
+   209                                 
+   210 000000D7 48C7C300000000         mov rbx, 0
+   211                                 
+   212                                 sumLoop:
+   213 000000DE 58                      pop rax
+   214 000000DF 99                      cdq
+   215                                 
+   216 000000E0 49F7EB                  imul r11
+   217 000000E3 4801C3                  add rbx, rax
+   218                                 
+   219 000000E6 4C89D8                  mov rax, r11
+   220 000000E9 99                      cdq
+   221 000000EA 49F7EA                  imul r10
+   222 000000ED 4989C3                  mov r11, rax
+   223 000000F0 E2EA                    loop sumLoop
+   224                                 
+   225                                 
+   226 000000F2 891E                    mov dword [rsi], ebx
+   227 000000F4 B801000000              mov eax, TRUE
+   228 000000F9 EB03                    jmp str2intRet
+   229                                 
+   230                                 invalidStr:
+   231 000000FB B800000000              mov eax, FALSE
+   232                                 
+   233                                 str2intRet:
+   234 00000100 5B                      pop rbx
+   235 00000101 C3                      ret
+   236                                 
+   237                                 
+   238                                 
+   239                                 
+   240                                 [global _start]
+   241                                 _start:
+   242 00000102 8B1425[00000000]        mov edx, dword [len]
+   243 00000109 48C7C6[00000000]        mov rsi, str1
+   244 00000110 8B3C25[00000000]        mov edi, dword [num1]
+   245 00000117 E8DFFEFFFF              call int2str
+   246 0000011C 8B1425[00000000]        mov edx, dword [len]
+   247 00000123 48C7C6[00000000]        mov rsi, str2
+   248 0000012A 8B3C25[00000000]        mov edi, dword [num2]
+   249 00000131 E8C5FEFFFF              call int2str
+   250 00000136 8B1425[00000000]        mov edx, dword [len]
+   251 0000013D 48C7C6[00000000]        mov rsi, str3
+   252 00000144 8B3C25[00000000]        mov edi, dword [num3]
+   253 0000014B E8ABFEFFFF              call int2str
+   254                                 
+   255 00000150 48C7C6[00000000]        mov rsi, testint1
+   256 00000157 48C7C7[00000000]        mov rdi, teststr1
+   257 0000015E E824FFFFFF              call str2int
+   258 00000163 880425[00000000]        mov byte [testret1], al
+   259                                 
+   260 0000016A 48C7C6[00000000]        mov rsi, testint2
+   261 00000171 48C7C7[00000000]        mov rdi, teststr2
+   262 00000178 E80AFFFFFF              call str2int
+   263 0000017D 880425[00000000]        mov byte [testret2], al
+   264                                 
+   265 00000184 48C7C6[00000000]        mov rsi, testint3
+   266 0000018B 48C7C7[00000000]        mov rdi, teststr3
+   267 00000192 E8F0FEFFFF              call str2int
+   268 00000197 880425[00000000]        mov byte [testret3], al
+   269                                 
+   270 0000019E 48C7C6[00000000]        mov rsi, testint4
+   271 000001A5 48C7C7[00000000]        mov rdi, teststr4
+   272 000001AC E8D6FEFFFF              call str2int
+   273 000001B1 880425[00000000]        mov byte [testret4], al
+   274                                 
+   275                                 
+   276                                 last:
+   277 000001B8 B83C000000              mov eax, SYS_exit
+   278 000001BD BB00000000              mov ebx, EXIT_SUCCESS
+   279 000001C2 0F05                    syscall

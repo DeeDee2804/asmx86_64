@@ -1,0 +1,22 @@
+(gdb) ------------------------------------ 
+Display list before sort
+0x402000:	19	-6	7	-8
+0x402010:	1	-20
+Continuing.
+
+Breakpoint 2, 0x0000000000401180 in last () at selection_sort.asm:249
+249	    call    stats
+Display list after sort
+0x402000:	-20	-8	-6	1
+0x402010:	7	19
+
+Display the sum, average, min, max, med1, med2 of list
+0x40202c:	-7
+0x402030:	-1
+0x40201c:	-20
+0x402020:	19
+0x402024:	-6
+0x402028:	1
+0x402034:	12
+
+ 

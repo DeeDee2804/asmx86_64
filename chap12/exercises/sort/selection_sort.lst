@@ -1,0 +1,259 @@
+     1                                 %line 1+1 selection_sort.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [section .data]
+    11                                 
+    12                                 
+    13                                 
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 
+    17                                 
+    18 00000000 13000000FAFFFFFF07-    list dd 19, -6, 7, -8, 1, -20
+    19 00000000 000000F8FFFFFF0100-
+    20 00000000 0000ECFFFFFF       
+    21 00000018 06000000               len dd 6
+    22 0000001C 00000000               min dd 0
+    23 00000020 00000000               max dd 0
+    24 00000024 00000000               med1 dd 0
+    25 00000028 00000000               med2 dd 0
+    26 0000002C 00000000               sum dd 0
+    27 00000030 00000000               ave dd 0
+    28 00000034 00000000               dev dd 0
+    29                                 
+    30                                 
+    31                                 
+    32                                 [section .text]
+    33                                 
+    34                                 
+    35                                 
+    36                                 
+    37                                 
+    38                                 
+    39                                 
+    40                                 
+    41                                 
+    42                                 
+    43                                 
+    44                                 
+    45                                 
+    46                                 
+    47                                 
+    48                                 
+    49                                 
+    50                                 
+    51                                 
+    52                                 
+    53                                 
+    54                                 
+    55                                 
+    56                                 
+    57                                 
+    58                                 
+    59                                 [global selection_sort]
+    60                                 selection_sort:
+    61                                 
+    62 00000000 49C7C000000000          mov r8, 0
+    63                                 
+    64                                 outerLoop:
+    65 00000007 468B1487                mov r10d, dword [rdi+r8*4]
+    66 0000000B 4D89C3                  mov r11, r8
+    67 0000000E 4D89C1                  mov r9, r8
+    68                                 innerLoop:
+    69 00000011 463B148F                cmp r10d, dword [rdi+r9*4]
+    70 00000015 7E05                    jle innerEnd
+    71 00000017 468B148F                mov r10d, dword [rdi+r9*4]
+    72 0000001B 4D89CB                  mov r11, r9
+    73                                 innerEnd:
+    74 0000001E 49FFC1                  inc r9
+    75 00000021 4939F1                  cmp r9, rsi
+    76 00000024 7CE9                    jl innerLoop
+    77                                 outerEnd:
+    78                                 
+    79 00000026 428B0487                mov eax, dword [rdi+r8*4]
+    80 0000002A 4289049F                mov dword [rdi+r11*4], eax
+    81 0000002E 46891487                mov dword [rdi+r8*4], r10d
+    82 00000032 49FFC0                  inc r8
+    83 00000035 4939F0                  cmp r8, rsi
+    84 00000038 7CCB                    jl outerLoop
+    85 0000003A C3                     ret
+    86                                 
+    87                                 
+    88                                 
+    89                                 
+    90                                 
+    91                                 
+    92                                 
+    93                                 
+    94                                 
+    95                                 
+    96                                 
+    97                                 
+    98                                 
+    99                                 
+   100                                 
+   101                                 
+   102                                 [global sqrt]
+   103                                 sqrt:
+   104                                 
+   105 0000003B 48C7C132000000          mov rcx, 50
+   106 00000042 4189FA                  mov r10d, edi
+   107 00000045 41BB02000000            mov r11d, 2
+   108                                 
+   109                                 squareLoop:
+   110                                 
+   111 0000004B 89F8                    mov eax, edi
+   112 0000004D BA00000000              mov edx, 0
+   113 00000052 41F7F2                  div r10d
+   114                                 
+   115 00000055 4401D0                  add eax, r10d
+   116                                 
+   117 00000058 BA00000000              mov edx, 0
+   118 0000005D 41F7F3                  div r11d
+   119 00000060 4189C2                  mov r10d, eax
+   120 00000063 E2E4                    loop squareLoop
+   121                                 
+   122 00000065 448916                  mov dword [rsi], r10d
+   123 00000068 C3                     ret
+   124                                 
+   125                                 
+   126                                 
+   127                                 
+   128                                 
+   129                                 
+   130                                 
+   131                                 
+   132                                 
+   133                                 
+   134                                 
+   135                                 
+   136                                 
+   137                                 
+   138                                 
+   139                                 
+   140                                 
+   141                                 
+   142                                 [global stats]
+   143                                 stats:
+   144                                 
+   145 00000069 55                      push rbp
+   146 0000006A 4889E5                  mov rbp, rsp
+   147 0000006D 4154                    push r12
+   148                                 
+   149                                 
+   150                                 
+   151                                 minmax:
+   152 0000006F 8B07                    mov eax, dword [rdi]
+   153 00000071 8902                    mov dword [rdx], eax
+   154 00000073 4989F2                  mov r10, rsi
+   155 00000076 49FFCA                  dec r10
+   156 00000079 428B0497                mov eax, dword [rdi+r10*4]
+   157 0000007D 418901                  mov dword [r9], eax
+   158                                 
+   159                                 
+   160                                 
+   161 00000080 4889F0                  mov rax, rsi
+   162 00000083 48C7C200000000          mov rdx, 0
+   163 0000008A 49C7C202000000          mov r10, 2
+   164 00000091 49F7F2                  div r10
+   165                                 
+   166 00000094 4883FA00                cmp rdx, 0
+   167 00000098 740A                    je evenLength
+   168                                 
+   169 0000009A 448B1487                mov r10d, dword [rdi+rax*4]
+   170 0000009E 448911                  mov dword [rcx], r10d
+   171 000000A1 458910                  mov dword [r8], r10d
+   172 000000A4 EB0F                    jmp medDone
+   173                                 evenLength:
+   174 000000A6 448B1487                mov r10d, dword [rdi+rax*4]
+   175 000000AA 458910                  mov dword [r8], r10d
+   176 000000AD 48FFC8                  dec rax
+   177 000000B0 448B1487                mov r10d, dword [rdi+rax*4]
+   178 000000B4 448911                  mov dword [rcx], r10d
+   179                                 
+   180                                 medDone:
+   181                                 
+   182                                 
+   183                                 
+   184 000000B7 49C7C200000000          mov r10, 0
+   185 000000BE 48C7C000000000          mov rax, 0
+   186                                 sumLoop:
+   187 000000C5 42030497                add eax, dword [rdi+r10*4]
+   188 000000C9 49FFC2                  inc r10
+   189 000000CC 4939F2                  cmp r10, rsi
+   190 000000CF 7CF2                    jl sumLoop
+   191                                 
+   192 000000D1 4C8B5510                mov r10, qword [rbp+16]
+   193 000000D5 418902                  mov dword [r10], eax
+   194                                 
+   195 000000D8 99                      cdq
+   196 000000D9 F7FE                    idiv esi
+   197 000000DB 4C8B5518                mov r10, qword [rbp+24]
+   198 000000DF 418902                  mov dword [r10], eax
+   199 000000E2 4189C4                  mov r12d, eax
+   200                                 
+   201                                 
+   202 000000E5 49C7C200000000          mov r10, 0
+   203 000000EC 49C7C300000000          mov r11, 0
+   204 000000F3 48C7C000000000          mov rax, 0
+   205                                 devLoop:
+   206                                 
+   207 000000FA 428B0497                mov eax, dword [rdi+r10*4]
+   208 000000FE 4429E0                  sub eax, r12d
+   209 00000101 99                      cdq
+   210 00000102 F7E8                    imul eax
+   211 00000104 4101C3                  add r11d, eax
+   212 00000107 49FFC2                  inc r10
+   213 0000010A 4939F2                  cmp r10, rsi
+   214 0000010D 7CE9                    jl devLoop
+   215                                 
+   216 0000010F 4489D8                  mov eax, r11d
+   217 00000112 99                      cdq
+   218 00000113 F7FE                    idiv esi
+   219                                 
+   220 00000115 57                      push rdi
+   221 00000116 56                      push rsi
+   222 00000117 89C7                    mov edi, eax
+   223 00000119 48C7C6[00000000]        mov rsi, dev
+   224 00000120 E811FFFFFF              call sqrt
+   225 00000125 5E                      pop rsi
+   226 00000126 5F                      pop rdi
+   227                                 
+   228                                 
+   229                                 
+   230 00000127 415C                    pop r12
+   231 00000129 5D                      pop rbp
+   232 0000012A C3                     ret
+   233                                 
+   234                                 
+   235                                 
+   236                                 
+   237                                 [global _start]
+   238                                 _start:
+   239 0000012B 8B3425[00000000]        mov esi, dword [len]
+   240 00000132 48C7C7[00000000]        mov rdi, list
+   241                                 sort:
+   242 00000139 E8BDFEFFFF              call selection_sort
+   243 0000013E 68[00000000]            push dev
+   244 00000143 68[00000000]            push ave
+   245 00000148 68[00000000]            push sum
+   246 0000014D 49C7C1[00000000]        mov r9, max
+   247 00000154 49C7C0[00000000]        mov r8, med2
+   248 0000015B 48C7C1[00000000]        mov rcx, med1
+   249 00000162 48C7C2[00000000]        mov rdx, min
+   250 00000169 8B3425[00000000]        mov esi, dword [len]
+   251 00000170 48C7C7[00000000]        mov rdi, list
+   252 00000177 E8E8FEFFFF              call stats
+   253 0000017C 4883C418                add rsp, 24
+   254                                 
+   255                                 
+   256                                 last:
+   257 00000180 B83C000000              mov eax, SYS_exit
+   258 00000185 BB00000000              mov ebx, EXIT_SUCCESS
+   259 0000018A 0F05                    syscall

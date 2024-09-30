@@ -1,0 +1,24 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file stats2.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the sum, average, min, max, med1, med2 of list\n
+echo \n
+x/dw &sum
+x/dw &ave
+x/dw &min
+x/dw &max
+x/dw &med1
+x/dw &med2
+echo \n \n
+set logging enabled off
+continue
+quit

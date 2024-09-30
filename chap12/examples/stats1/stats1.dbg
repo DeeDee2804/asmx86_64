@@ -1,0 +1,24 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file stats1.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the sum, average of list1 \n
+echo \n
+x/dw &sum1
+x/dw &ave1
+echo Display the sum, average of list2 \n
+echo \n
+x/dw &sum2
+x/dw &ave2
+echo \n \n
+set logging enabled off
+continue
+quit
