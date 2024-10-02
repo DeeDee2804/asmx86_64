@@ -1,0 +1,329 @@
+     1                                 %line 1+1 fileio.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [section .data]
+     9                                 
+    10                                 
+    11                                 
+    12                                 LF equ 10
+    13                                 NULL equ 0
+    14                                 TRUE equ 1
+    15                                 FALSE equ 0
+    16                                 STRLEN equ 50
+    17                                 SUCCESS equ 0
+    18                                 NOSUCCESS equ 1
+    19                                 MAXPWLEN equ 12
+    20                                 EXIT_SUCCESS equ 0
+    21                                 
+    22                                 STDIN equ 0
+    23                                 STDOUT equ 1
+    24                                 STDERR equ 2
+    25                                 
+    26                                 SYS_read equ 0
+    27                                 SYS_write equ 1
+    28                                 SYS_open equ 2
+    29                                 SYS_close equ 3
+    30                                 SYS_fork equ 57
+    31                                 SYS_exit equ 60
+    32                                 SYS_creat equ 85
+    33                                 SYS_time equ 201
+    34                                 
+    35                                 O_CREAT equ 0x40
+    36                                 O_TRUNC equ 0x200
+    37                                 O_APPEND equ 0x400
+    38                                 
+    39                                 O_RDONLY equ 000000
+    40                                 O_WRONLY equ 000001
+    41                                 O_RDWR equ 000002
+    42                                 
+    43                                 S_IRUSR equ 00400
+    44                                 S_IWUSR equ 00200
+    45                                 S_IXUSR equ 00100
+    46                                 
+    47                                 
+    48 00000000 7365637265742E7478-    filename db "secret.txt", NULL
+    49 00000000 7400               
+    50 0000000B 4B686F695965754861-    password db "KhoiYeuHanRatNhieu", NULL
+    51 0000000B 6E5261744E68696575-
+    52 0000000B 00                 
+    53 0000001E 577269746520636F6D-    writeDoneStr db "Write complete successfully.", LF, NULL
+    54 0000001E 706C65746520737563-
+    55 0000001E 6365737366756C6C79-
+    56 0000001E 2E0A00             
+    57 0000003C 5265616420436F6D70-    readDoneStr db "Read Completed.", LF, NULL
+    58 0000003C 6C657465642E0A00   
+    59 0000004D 4572726F7220777269-    errMsgWrite db "Error writing to file", LF, NULL
+    60 0000004D 74696E6720746F2066-
+    61 0000004D 696C650A00         
+    62 00000064 4572726F7220726561-    errMsgRead db "Error reading from the file", LF, NULL
+    63 00000064 64696E672066726F6D-
+    64 00000064 207468652066696C65-
+    65 00000064 0A00               
+    66 00000081 0A00                   newLine db LF, NULL
+    67 00000083 00000000               lenStr dd 0
+    68                                 
+    69                                 
+    70                                 [section .bss]
+    71 00000000 <gap>                  inLine resb STRLEN+2
+    72                                 
+    73                                 
+    74                                 [section .text]
+    75                                 [global _start]
+    76                                 _start:
+    77                                 
+    78                                 
+    79                                 
+    80 00000000 48C7C7[00000000]        mov rdi, filename
+    81 00000007 48C7C6[00000000]        mov rsi, password
+    82 0000000E E844000000              call fileWrite
+    83                                 
+    84 00000013 48C7C7[00000000]        mov rdi, filename
+    85 0000001A 48C7C6[00000000]        mov rsi, inLine
+    86 00000021 48C7C20C000000          mov rdx, MAXPWLEN
+    87                                 
+    88 00000028 48C7C1[00000000]        mov rcx, lenStr
+    89 0000002F E89D000000              call fileRead
+    90                                 
+    91 00000034 48C7C7[00000000]        mov rdi, inLine
+    92 0000003B E803010000              call printString
+    93                                 
+    94 00000040 48C7C7[00000000]        mov rdi, newLine
+    95 00000047 E8F7000000              call printString
+    96                                 
+    97                                 
+    98                                 last:
+    99 0000004C 48C7C03C000000          mov rax, SYS_exit
+   100 00000053 48C7C700000000          mov rdi, EXIT_SUCCESS
+   101 0000005A 0F05                    syscall
+   102                                 
+   103                                 
+   104                                 
+   105                                 
+   106                                 
+   107                                 
+   108                                 
+   109                                 
+   110                                 
+   111                                 
+   112                                 
+   113                                 
+   114                                 
+   115                                 
+   116                                 
+   117                                 [global fileWrite]
+   118                                 fileWrite:
+   119                                 
+   120 0000005C 53                      push rbx
+   121 0000005D 4889F3                  mov rbx, rsi
+   122                                 
+   123                                 
+   124 00000060 48C7C055000000          mov rax, SYS_creat
+   125                                 
+   126 00000067 48C7C680010000          mov rsi, S_IRUSR | S_IWUSR
+   127 0000006E 0F05                    syscall
+   128                                 
+   129 00000070 83F800                  cmp eax, 0
+   130 00000073 7C48                    jl fileWrite_error
+   131                                 
+   132                                 
+   133 00000075 4989C2                  mov r10, rax
+   134                                 
+   135                                 
+   136                                 
+   137 00000078 4889DF                  mov rdi, rbx
+   138 0000007B E8F6000000              call countString
+   139                                 
+   140 00000080 4989C3                  mov r11, rax
+   141 00000083 49FFCB                  dec r11
+   142                                 
+   143 00000086 48C7C001000000          mov rax, SYS_write
+   144 0000008D 4C89D7                  mov rdi, r10
+   145 00000090 4889DE                  mov rsi, rbx
+   146 00000093 4C89DA                  mov rdx, r11
+   147 00000096 0F05                    syscall
+   148                                 
+   149 00000098 4883F800                cmp rax, 0
+   150 0000009C 7C1F                    jl fileWrite_error
+   151                                 
+   152                                 
+   153 0000009E 48C7C003000000          mov rax, SYS_close
+   154 000000A5 4C89D7                  mov rdi, r10
+   155 000000A8 0F05                    syscall
+   156 000000AA 48C7C7[00000000]        mov rdi, writeDoneStr
+   157 000000B1 E88D000000              call printString
+   158                                 
+   159 000000B6 48C7C000000000          mov rax, SUCCESS
+   160 000000BD EB13                    jmp fileWrite_end
+   161                                 
+   162                                 fileWrite_error:
+   163 000000BF 48C7C7[00000000]        mov rdi, errMsgWrite
+   164 000000C6 E878000000              call printString
+   165 000000CB 48C7C001000000          mov rax, NOSUCCESS
+   166 000000D2 EBFE                    jmp fileWrite_end
+   167                                 
+   168                                 fileWrite_end:
+   169 000000D4 5B                      pop rbx
+   170 000000D5 C3                      ret
+   171                                 
+   172                                 
+   173                                 
+   174                                 
+   175                                 
+   176                                 
+   177                                 
+   178                                 
+   179                                 
+   180                                 
+   181                                 
+   182                                 
+   183                                 
+   184                                 
+   185                                 
+   186                                 
+   187                                 
+   188                                 
+   189                                 [global fileRead]
+   190                                 fileRead:
+   191                                 
+   192 000000D6 53                      push rbx
+   193 000000D7 4154                    push r12
+   194 000000D9 4889F3                  mov rbx, rsi
+   195                                 
+   196 000000DC 4989CC                  mov r12, rcx
+   197                                 
+   198                                 
+   199 000000DF 48C7C002000000          mov rax, SYS_open
+   200                                 
+   201 000000E6 48C7C600000000          mov rsi, O_RDONLY
+   202 000000ED 0F05                    syscall
+   203                                 
+   204 000000EF 83F800                  cmp eax, 0
+   205 000000F2 7C3B                    jl fileRead_error
+   206                                 
+   207                                 
+   208 000000F4 4989C2                  mov r10, rax
+   209                                 
+   210                                 
+   211                                 
+   212 000000F7 48C7C000000000          mov rax, SYS_read
+   213 000000FE 4C89D7                  mov rdi, r10
+   214 00000101 4889DE                  mov rsi, rbx
+   215                                 
+   216 00000104 0F05                    syscall
+   217                                 
+   218 00000106 4883F800                cmp rax, 0
+   219 0000010A 7C23                    jl fileRead_error
+   220                                 
+   221 0000010C 41890424                mov dword [r12], eax
+   222                                 
+   223                                 
+   224 00000110 48C7C003000000          mov rax, SYS_close
+   225 00000117 4C89D7                  mov rdi, r10
+   226 0000011A 0F05                    syscall
+   227                                 
+   228 0000011C 48C7C7[00000000]        mov rdi, readDoneStr
+   229 00000123 E81B000000              call printString
+   230                                 
+   231 00000128 48C7C000000000          mov rax, SUCCESS
+   232 0000012F EB11                    jmp fileRead_end
+   233                                 
+   234                                 fileRead_error:
+   235 00000131 48C7C7[00000000]        mov rdi, errMsgRead
+   236 00000138 E806000000              call printString
+   237 0000013D 48C7C001000000          mov rax, NOSUCCESS
+   238                                 
+   239                                 fileRead_end:
+   240 00000144 415C                    pop r12
+   241 00000146 5B                      pop rbx
+   242 00000147 C3                      ret
+   243                                 
+   244                                 
+   245                                 
+   246                                 
+   247                                 
+   248                                 
+   249                                 
+   250                                 
+   251                                 
+   252                                 
+   253                                 
+   254                                 
+   255                                 
+   256                                 
+   257                                 
+   258                                 
+   259                                 
+   260                                 
+   261                                 [global printString]
+   262                                 printString:
+   263                                 
+   264 00000148 53                      push rbx
+   265                                 
+   266                                 
+   267                                 
+   268 00000149 4889FB                  mov rbx, rdi
+   269 0000014C 48C7C200000000          mov rdx, 0
+   270                                 countLoop:
+   271 00000153 803B00                  cmp byte [rbx], NULL
+   272 00000156 7406                    je countDone
+   273 00000158 48FFC2                  inc rdx
+   274 0000015B 48FFC3                  inc rbx
+   275 0000015E EBF1                    jmp countLoop
+   276                                 countDone:
+   277 00000160 4883FA00                cmp rdx, 0
+   278 00000164 7411                    je prtDone
+   279                                 
+   280                                 
+   281                                 
+   282 00000166 48C7C001000000          mov rax, SYS_write
+   283 0000016D 4889FE                  mov rsi, rdi
+   284 00000170 48C7C701000000          mov rdi, STDOUT
+   285                                 
+   286 00000177 0F05                    syscall
+   287                                 
+   288                                 
+   289                                 prtDone:
+   290 00000179 5B                      pop rbx
+   291 0000017A C3                      ret
+   292                                 
+   293                                 
+   294                                 
+   295                                 
+   296                                 
+   297                                 
+   298                                 
+   299                                 
+   300                                 
+   301                                 
+   302                                 
+   303                                 
+   304                                 
+   305                                 
+   306                                 [global countString]
+   307                                 countString:
+   308                                 
+   309 0000017B 53                      push rbx
+   310                                 
+   311                                 
+   312                                 
+   313 0000017C 4889FB                  mov rbx, rdi
+   314 0000017F 48C7C200000000          mov rdx, 0
+   315                                 countString_loop:
+   316 00000186 803B00                  cmp byte [rbx], NULL
+   317 00000189 7406                    je countString_end
+   318 0000018B 48FFC2                  inc rdx
+   319 0000018E 48FFC3                  inc rbx
+   320 00000191 EBF1                    jmp countString_loop
+   321                                 
+   322                                 
+   323                                 
+   324                                 countString_end:
+   325 00000193 48FFC2                  inc rdx
+   326 00000196 4889D0                  mov rax, rdx
+   327 00000199 5B                      pop rbx
+   328 0000019A C3                      ret
+   329                                 

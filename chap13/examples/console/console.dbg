@@ -1,0 +1,19 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file console.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the input text\n
+echo \n
+x/s &inLine
+echo \n \n
+set logging enabled off
+continue
+quit

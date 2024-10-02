@@ -1,0 +1,8 @@
+(gdb) ------------------------------------ 
+Display the password
+
+0x402088:	"KhoiYeuHanRa"
+Display the password length
+0x402083:	12
+
+ 
