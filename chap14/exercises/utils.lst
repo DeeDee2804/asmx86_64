@@ -1,0 +1,138 @@
+     1                                 %line 1+1 utils.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7                                 NULL equ 0
+     8                                 SYS_write equ 1
+     9                                 STDOUT equ 1
+    10                                 
+    11                                 
+    12                                 [section .text]
+    13                                 
+    14                                 
+    15                                 
+    16                                 
+    17                                 
+    18                                 
+    19                                 
+    20                                 
+    21                                 
+    22                                 
+    23                                 
+    24                                 
+    25                                 
+    26                                 
+    27                                 
+    28                                 
+    29                                 
+    30                                 [global printString]
+    31                                 printString:
+    32                                 
+    33 00000000 53                      push rbx
+    34                                 
+    35                                 
+    36                                 
+    37 00000001 4889FB                  mov rbx, rdi
+    38 00000004 48C7C200000000          mov rdx, 0
+    39                                 countLoop:
+    40 0000000B 803B00                  cmp byte [rbx], NULL
+    41 0000000E 7406                    je countDone
+    42 00000010 48FFC2                  inc rdx
+    43 00000013 48FFC3                  inc rbx
+    44 00000016 EBF1                    jmp countLoop
+    45                                 countDone:
+    46 00000018 4883FA00                cmp rdx, 0
+    47 0000001C 7411                    je prtDone
+    48                                 
+    49                                 
+    50                                 
+    51 0000001E 48C7C001000000          mov rax, SYS_write
+    52 00000025 4889FE                  mov rsi, rdi
+    53 00000028 48C7C701000000          mov rdi, STDOUT
+    54                                 
+    55 0000002F 0F05                    syscall
+    56                                 
+    57                                 
+    58                                 prtDone:
+    59 00000031 5B                      pop rbx
+    60 00000032 C3                      ret
+    61                                 
+    62                                 
+    63                                 
+    64                                 
+    65                                 
+    66                                 
+    67                                 
+    68                                 
+    69                                 
+    70                                 
+    71                                 
+    72                                 
+    73                                 
+    74                                 [global int2str]
+    75                                 int2str:
+    76                                 
+    77 00000033 55                      push rbp
+    78 00000034 4889E5                  mov rbp, rsp
+    79                                 
+    80 00000037 4883EC01                sub rsp, 1
+    81 0000003B 53                      push rbx
+    82                                 
+    83                                 
+    84 0000003C C645FF00                mov byte [rbp-1], 0
+    85 00000040 83FF00                  cmp edi, 0
+    86 00000043 7D02                    jge division
+    87                                 
+    88 00000045 C645FF01                mov byte [rbp-1], 1
+    89                                 
+    90                                 
+    91                                 division:
+    92 00000049 89F8                    mov eax, edi
+    93 0000004B 48C7C100000000          mov rcx, 0
+    94 00000052 48C7C30A000000          mov rbx, 10
+    95                                 
+    96                                 divideLoop:
+    97                                 
+    98 00000059 99                      cdq
+    99 0000005A F7FB                    idiv ebx
+   100                                 
+   101 0000005C 52                      push rdx
+   102                                 
+   103 0000005D 48FFC1                  inc rcx
+   104                                 
+   105 00000060 83F800                  cmp eax, 0
+   106 00000063 75F2                    jne divideLoop
+   107                                 
+   108                                 
+   109                                 
+   110 00000065 48C7C700000000          mov rdi, 0
+   111                                 
+   112                                 addSign:
+   113 0000006C 807DFF00                cmp byte [rbp-1], 0
+   114                                 
+   115 00000070 7405                    je popLoop
+   116 00000072 C6043E2D                mov byte [rsi+rdi], '-'
+   117 00000076 48FFC7                  inc rdi
+   118                                 
+   119                                 popLoop:
+   120 00000079 58                      pop rax
+   121                                 
+   122 0000007A 807DFF00                cmp byte [rbp-1], 0
+   123 0000007E 7400                    je addAbs
+   124 00000080 F6D8                    neg al
+   125                                 addAbs:
+   126 00000082 0430                    add al, '0'
+   127 00000084 88043E                  mov byte [rsi+rdi], al
+   128 00000087 48FFC7                  inc rdi
+   129 0000008A E2EB                    loop popLoop
+   130                                 
+   131 0000008C C6443E0100              mov byte [rsi+rdi+1], NULL
+   132                                 
+   133                                 
+   134 00000091 5B                      pop rbx
+   135 00000092 4889EC                  mov rsp, rbp
+   136 00000095 5D                      pop rbp
+   137 00000096 C3                     ret
+   138                                 

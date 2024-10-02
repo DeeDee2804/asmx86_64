@@ -1,0 +1,105 @@
+     1                                 %line 1+1 main.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7                                 
+     8                                 
+     9                                 LF equ 10
+    10                                 NULL equ 0
+    11                                 
+    12                                 TRUE equ 1
+    13                                 FALSE equ 0
+    14                                 
+    15                                 EXIT_SUCCESS equ 0
+    16                                 SYS_exit equ 60
+    17                                 
+    18                                 
+    19                                 
+    20                                 
+    21 00000000 53756D206F66206172-    sumMesg db "Sum of array: ", NULL
+    22 00000000 7261793A2000       
+    23 0000000F 41766572616765206F-    aveMesg db "Average of array: ", NULL
+    24 0000000F 662061727261793A20-
+    25 0000000F 00                 
+    26 00000022 0A00                   newLine db LF, NULL
+    27                                 
+    28 00000024 02000000FDFFFFFF04-    lst2 dd 2, -3, 4, 5, 6
+    29 00000024 000000050000000600-
+    30 00000024 0000               
+    31 00000038 F9FFFFFF0A0000000C-     dd -7, 10, 12, 14, 17
+    32 00000038 0000000E0000001100-
+    33 00000038 0000               
+    34 0000004C 0A000000               len2 dd 10
+    35                                 
+    36                                 
+    37                                 
+    38                                 [section .bss]
+    39                                 
+    40 00000000 <gap>                  sum2 resd 1
+    41 00000004 <gap>                  ave2 resd 1
+    42 00000008 <gap>                  sumStr resb 5
+    43 0000000D <gap>                  aveStr resb 5
+    44                                 
+    45                                 [extern lstSum]
+    46                                 %line 37+0 main.asm
+    47                                 [extern lstAverage]
+    48                                 %line 38+1 main.asm
+    49                                 [extern printString]
+    50                                 %line 38+0 main.asm
+    51                                 [extern int2str]
+    52                                 %line 39+1 main.asm
+    53                                 
+    54                                 
+    55                                 [section .text]
+    56                                 [global _start]
+    57                                 _start:
+    58                                 
+    59                                 
+    60                                 
+    61                                 
+    62                                 
+    63 00000000 48C7C7[00000000]        mov rdi, lst2
+    64 00000007 8B3425[00000000]        mov esi, dword [len2]
+    65 0000000E E8(F6FFFFFF)            call lstSum
+    66 00000013 890425[00000000]        mov dword [sum2], eax
+    67                                 
+    68 0000001A 48C7C7[00000000]        mov rdi, lst2
+    69 00000021 8B3425[00000000]        mov esi, dword [len2]
+    70 00000028 E8(F6FFFFFF)            call lstAverage
+    71 0000002D 890425[00000000]        mov dword [ave2], eax
+    72                                 
+    73 00000034 48C7C7[00000000]        mov rdi, sumMesg
+    74 0000003B E8(F6FFFFFF)            call printString
+    75                                 
+    76 00000040 8B3C25[00000000]        mov edi, dword [sum2]
+    77 00000047 48C7C6[00000000]        mov rsi, sumStr
+    78 0000004E E8(F6FFFFFF)            call int2str
+    79                                 
+    80 00000053 48C7C7[00000000]        mov rdi, sumStr
+    81 0000005A E8(F6FFFFFF)            call printString
+    82                                 
+    83 0000005F 48C7C7[00000000]        mov rdi, newLine
+    84 00000066 E8(F6FFFFFF)            call printString
+    85                                 
+    86 0000006B 48C7C7[00000000]        mov rdi, aveMesg
+    87 00000072 E8(F6FFFFFF)            call printString
+    88                                 
+    89 00000077 8B3C25[00000000]        mov edi, dword [ave2]
+    90 0000007E 48C7C6[00000000]        mov rsi, aveStr
+    91 00000085 E8(F6FFFFFF)            call int2str
+    92                                 
+    93 0000008A 48C7C7[00000000]        mov rdi, aveStr
+    94 00000091 E8(F6FFFFFF)            call printString
+    95                                 
+    96 00000096 48C7C7[00000000]        mov rdi, newLine
+    97 0000009D E8(F6FFFFFF)            call printString
+    98                                 
+    99                                 
+   100                                 
+   101                                 last:
+   102 000000A2 48C7C03C000000          mov rax, SYS_exit
+   103 000000A9 48C7C700000000          mov rdi, EXIT_SUCCESS
+   104 000000B0 0F05                    syscall
+   105                                 

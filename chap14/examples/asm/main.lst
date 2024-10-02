@@ -1,0 +1,75 @@
+     1                                 %line 1+1 main.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7                                 
+     8                                 
+     9                                 LF equ 10
+    10                                 NULL equ 0
+    11                                 
+    12                                 TRUE equ 1
+    13                                 FALSE equ 0
+    14                                 
+    15                                 EXIT_SUCCESS equ 0
+    16                                 SYS_exit equ 60
+    17                                 
+    18                                 
+    19                                 
+    20                                 
+    21 00000000 01000000FEFFFFFF03-    lst1 dd 1, -2, 3, -4, 5
+    22 00000000 000000FCFFFFFF0500-
+    23 00000000 0000               
+    24 00000014 07000000090000000B-     dd 7, 9, 11
+    25 00000014 000000             
+    26 00000020 08000000               len1 dd 8
+    27                                 
+    28 00000024 02000000FDFFFFFF04-    lst2 dd 2, -3, 4, 5, 6
+    29 00000024 000000050000000600-
+    30 00000024 0000               
+    31 00000038 F9FFFFFF0A0000000C-     dd -7, 10, 12, 14, 16
+    32 00000038 0000000E0000001000-
+    33 00000038 0000               
+    34 0000004C 0A000000               len2 dd 10
+    35                                 
+    36                                 
+    37                                 
+    38                                 [section .bss]
+    39 00000000 <gap>                  sum1 resd 1
+    40 00000004 <gap>                  ave1 resd 1
+    41                                 
+    42 00000008 <gap>                  sum2 resd 1
+    43 0000000C <gap>                  ave2 resd 1
+    44                                 
+    45                                 [extern stats]
+    46                                 
+    47                                 
+    48                                 
+    49                                 [section .text]
+    50                                 [global _start]
+    51                                 _start:
+    52                                 
+    53                                 
+    54                                 
+    55                                 
+    56                                 
+    57 00000000 48C7C7[00000000]        mov rdi, lst1
+    58 00000007 8B3425[00000000]        mov esi, dword [len1]
+    59 0000000E 48C7C2[00000000]        mov rdx, sum1
+    60 00000015 48C7C1[00000000]        mov rcx, ave1
+    61 0000001C E8(F6FFFFFF)            call stats
+    62                                 
+    63 00000021 48C7C7[00000000]        mov rdi, lst2
+    64 00000028 8B3425[00000000]        mov esi, dword [len2]
+    65 0000002F 48C7C2[00000000]        mov rdx, sum2
+    66 00000036 48C7C1[00000000]        mov rcx, ave2
+    67 0000003D E8(F6FFFFFF)            call stats
+    68                                 
+    69                                 
+    70                                 
+    71                                 last:
+    72 00000042 48C7C03C000000          mov rax, SYS_exit
+    73 00000049 48C7C700000000          mov rdi, EXIT_SUCCESS
+    74 00000050 0F05                    syscall
+    75                                 
