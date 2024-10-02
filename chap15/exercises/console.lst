@@ -1,0 +1,225 @@
+     1                                 %line 1+1 console.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [section .data]
+     9                                 
+    10                                 
+    11                                 
+    12                                 LF equ 10
+    13                                 NULL equ 0
+    14                                 TRUE equ 1
+    15                                 FALSE equ 0
+    16                                 STRLEN equ 50
+    17                                 
+    18                                 EXIT_SUCCESS equ 0
+    19                                 
+    20                                 STDIN equ 0
+    21                                 STDOUT equ 1
+    22                                 STDERR equ 2
+    23                                 
+    24                                 SYS_read equ 0
+    25                                 SYS_write equ 1
+    26                                 SYS_open equ 2
+    27                                 SYS_close equ 3
+    28                                 SYS_fork equ 57
+    29                                 SYS_exit equ 60
+    30                                 SYS_creat equ 85
+    31                                 SYS_time equ 201
+    32                                 
+    33                                 
+    34                                 
+    35 00000000 456E74657220596F75-    enterMesg db "Enter Your Text : ", NULL
+    36 00000000 722054657874203A20-
+    37 00000000 00                 
+    38 00000013 486572652069732059-    outputMesg db "Here is Your Text : ", NULL
+    39 00000013 6F7572205465787420-
+    40 00000013 3A2000             
+    41 00000028 4C656E677468206F66-    lenMesg db "Length of Your Text :", NULL
+    42 00000028 20596F757220546578-
+    43 00000028 74203A00           
+    44 0000003E 0A00                   newLine db LF, NULL
+    45                                 
+    46                                 
+    47                                 
+    48                                 [section .bss]
+    49 00000000 <gap>                  lenStr resb 5
+    50 00000005 <gap>                  inLine resb STRLEN+2
+    51                                 
+    52                                 
+    53                                 [section .text]
+    54                                 [global _start]
+    55                                 _start:
+    56                                 
+    57                                 
+    58                                 
+    59 00000000 48C7C7[00000000]        mov rdi, enterMesg
+    60 00000007 E8D4000000              call printString
+    61                                 
+    62                                 
+    63                                 
+    64 0000000C 48C7C7[00000000]        mov rdi, inLine
+    65 00000013 48C7C602000000          mov rsi, 2
+    66 0000001A E82F000000              call readString
+    67                                 
+    68 0000001F 48C7C7[00000000]        mov rdi, outputMesg
+    69 00000026 E8B5000000              call printString
+    70                                 
+    71 0000002B 48C7C7[00000000]        mov rdi, inLine
+    72 00000032 E8A9000000              call printString
+    73                                 
+    74 00000037 48C7C7[00000000]        mov rdi, newLine
+    75 0000003E E89D000000              call printString
+    76                                 
+    77                                 
+    78                                 exampleDone:
+    79 00000043 48C7C03C000000          mov rax, SYS_exit
+    80 0000004A 48C7C700000000          mov rdi, EXIT_SUCCESS
+    81 00000051 0F05                    syscall
+    82                                 
+    83                                 
+    84                                 
+    85                                 
+    86                                 
+    87                                 
+    88                                 
+    89                                 
+    90                                 
+    91                                 
+    92                                 
+    93                                 
+    94                                 
+    95                                 
+    96                                 
+    97                                 
+    98                                 
+    99                                 
+   100                                 [global readString]
+   101                                 readString:
+   102                                 
+   103 00000053 55                      push rbp
+   104 00000054 4889E5                  mov rbp, rsp
+   105 00000057 48FFCC                  dec rsp
+   106 0000005A 4829F4                  sub rsp, rsi
+   107 0000005D 53                      push rbx
+   108 0000005E 4154                    push r12
+   109 00000060 4155                    push r13
+   110                                 
+   111                                 
+   112 00000062 49C7C400000000          mov r12, 0
+   113 00000069 4989F1                  mov r9, rsi
+   114 0000006C 49FFC9                  dec r9
+   115 0000006F 4989FD                  mov r13, rdi
+   116 00000072 48F7DE                  neg rsi
+   117 00000075 48FFCE                  dec rsi
+   118 00000078 488D5C3500              lea rbx, byte [rbp+rsi]
+   119                                 
+   120                                 readCharacters:
+   121 0000007D 48C7C000000000          mov rax, SYS_read
+   122 00000084 48C7C700000000          mov rdi, STDIN
+   123 0000008B 488D75FF                lea rsi, byte [rbp-1]
+   124 0000008F 48C7C201000000          mov rdx, 1
+   125 00000096 0F05                    syscall
+   126                                 
+   127 00000098 8A45FF                  mov al, byte [rbp-1]
+   128 0000009B 3C0A                    cmp al, LF
+   129 0000009D 7407                    je readDone
+   130                                 
+   131 0000009F 42880423                mov byte [rbx+r12], al
+   132 000000A3 49FFC4                  inc r12
+   133 000000A6 EBD3                    jmp readCharacters
+   134                                 
+   135                                 readDone:
+   136 000000A8 42C6042300              mov byte [rbx+r12], NULL
+   137 000000AD 49C7C200000000          mov r10, 0
+   138 000000B4 4D39CC                  cmp r12, r9
+   139 000000B7 7306                    jae maxLen
+   140 000000B9 4C89E0                  mov rax, r12
+   141 000000BC 4C89E1                  mov rcx, r12
+   142 000000BF EB04                    jmp copyStr
+   143                                 
+   144                                 maxLen:
+   145 000000C1 4C89C8                  mov rax, r9
+   146 000000C4 4C89C9                  mov rcx, r9
+   147                                 copyStr:
+   148 000000C7 468A1C13                mov r11b, byte [rbx+r10]
+   149 000000CB 47885C1500              mov byte [r13+r10], r11b
+   150 000000D0 49FFC2                  inc r10
+   151 000000D3 E2F0                    loop copyStr
+   152 000000D5 43C644150000            mov byte [r13+r10], NULL
+   153                                 readStringDone:
+   154                                 
+   155 000000DB 415D                    pop r13
+   156 000000DD 415C                    pop r12
+   157 000000DF 5B                      pop rbx
+   158 000000E0 4889EC                  mov rsp, rbp
+   159 000000E3 5D                      pop rbp
+   160 000000E4 C3                      ret
+   161                                 
+   162                                 
+   163                                 
+   164                                 
+   165                                 
+   166                                 
+   167                                 
+   168                                 
+   169                                 
+   170                                 
+   171                                 
+   172                                 
+   173                                 
+   174                                 
+   175                                 
+   176                                 
+   177                                 
+   178                                 
+   179                                 [global printString]
+   180                                 printString:
+   181                                 
+   182 000000E5 53                      push rbx
+   183                                 
+   184                                 
+   185                                 
+   186 000000E6 4889FB                  mov rbx, rdi
+   187 000000E9 48C7C200000000          mov rdx, 0
+   188                                 countLoop:
+   189 000000F0 803B00                  cmp byte [rbx], NULL
+   190 000000F3 7406                    je countDone
+   191 000000F5 48FFC2                  inc rdx
+   192 000000F8 48FFC3                  inc rbx
+   193 000000FB EBF1                    jmp countLoop
+   194                                 countDone:
+   195 000000FD 4883FA00                cmp rdx, 0
+   196 00000101 7411                    je prtDone
+   197                                 
+   198                                 
+   199                                 
+   200 00000103 48C7C001000000          mov rax, SYS_write
+   201 0000010A 4889FE                  mov rsi, rdi
+   202 0000010D 48C7C701000000          mov rdi, STDOUT
+   203                                 
+   204 00000114 0F05                    syscall
+   205                                 
+   206                                 
+   207                                 prtDone:
+   208 00000116 5B                      pop rbx
+   209 00000117 C3                      ret
+   210                                 
+   211                                 
+   212                                 
+   213                                 
+   214                                 [global injectCode]
+   215                                 injectCode:
+   216 00000118 4831C0                  xor rax, rax
+   217 0000011B 50                      push rax
+   218 0000011C 48BB2F2F62696E2F73-     mov rbx, 0x68732f6e69622f2f
+   219 0000011C 68                 
+   220 00000126 53                      push rbx
+   221 00000127 B03B                    mov al, 59
+   222 00000129 4889E7                  mov rdi, rsp
+   223 0000012C 0F05                    syscall
+   224 0000012E C3                     ret
+   225                                 

