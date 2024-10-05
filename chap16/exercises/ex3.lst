@@ -1,0 +1,214 @@
+     1                                 %line 1+1 ex3.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [section .note.GNU-stack noalloc noexec nowrite progbits]
+    11                                 
+    12                                 
+    13                                 [section .data]
+    14                                 
+    15                                 
+    16                                 SUCCESS equ 0
+    17                                 FAILURE equ 1
+    18                                 NULL equ 0
+    19                                 LF equ 10
+    20                                 EXIT_SUCCESS equ 0
+    21                                 
+    22                                 STDOUT equ 01
+    23                                 
+    24                                 SYS_read equ 0
+    25                                 SYS_write equ 1
+    26                                 SYS_open equ 2
+    27                                 SYS_close equ 3
+    28                                 SYS_fork equ 57
+    29                                 SYS_exit equ 60
+    30                                 SYS_creat equ 85
+    31                                 SYS_time equ 201
+    32                                 
+    33                                 O_RDONLY equ 000000
+    34                                 O_WRONLY equ 000001
+    35                                 O_RDWR equ 000002
+    36                                 
+    37                                 
+    38                                 EXPECTED_ARGS_NUM equ 2
+    39                                 MAX_STRING_LEN equ 255
+    40                                 
+    41                                 
+    42 00000000 4572726F723A204F6E-    mesg_wrongnumargs db 'Error: Only one file name is accepted', LF, NULL
+    43 00000000 6C79206F6E65206669-
+    44 00000000 6C65206E616D652069-
+    45 00000000 732061636365707465-
+    46 00000000 640A00             
+    47 00000027 4572726F723A204669-    mesg_fileerror db 'Error: File can not be read', LF, NULL
+    48 00000027 6C652063616E206E6F-
+    49 00000027 742062652072656164-
+    50 00000027 0A00               
+    51 00000044 0A00                   newLine db LF, NULL
+    52                                 
+    53                                 
+    54                                 
+    55                                 
+    56                                 [section .bss]
+    57                                 
+    58 00000000 <gap>                  strRead resb MAX_STRING_LEN
+    59                                 
+    60                                 
+    61                                 
+    62                                 [section .text]
+    63                                 [global main]
+    64                                 main:
+    65                                 
+    66 00000000 4989FC                  mov r12, rdi
+    67 00000003 4989F5                  mov r13, rsi
+    68                                 
+    69                                 
+    70 00000006 4983FC02                cmp r12, EXPECTED_ARGS_NUM
+    71 0000000A 753C                    jne wrongNumArgs
+    72                                 
+    73                                 
+    74                                 
+    75 0000000C 488B7E08                mov rdi, qword [rsi+8]
+    76 00000010 48C7C6[00000000]        mov rsi, strRead
+    77 00000017 E847000000              call fileRead
+    78                                 
+    79 0000001C 4883F800                cmp rax, SUCCESS
+    80 00000020 7518                    jne fileReadError
+    81                                 
+    82                                 
+    83                                 
+    84 00000022 48C7C7[00000000]        mov rdi, strRead
+    85 00000029 E88F000000              call printString
+    86 0000002E 48C7C7[00000000]        mov rdi, newLine
+    87 00000035 E883000000              call printString
+    88 0000003A EB1A                    jmp last
+    89                                 
+    90                                 
+    91                                 
+    92                                 fileReadError:
+    93 0000003C 48C7C7[00000000]        mov rdi, mesg_fileerror
+    94 00000043 E875000000              call printString
+    95 00000048 EB0C                    jmp last
+    96                                 
+    97                                 wrongNumArgs:
+    98 0000004A 48C7C7[00000000]        mov rdi, mesg_wrongnumargs
+    99 00000051 E867000000              call printString
+   100 00000056 EBFE                    jmp last
+   101                                 
+   102                                 last:
+   103 00000058 48C7C03C000000          mov rax, SYS_exit
+   104 0000005F 48C7C700000000          mov rdi, EXIT_SUCCESS
+   105 00000066 0F05                    syscall
+   106                                 
+   107                                 
+   108                                 
+   109                                 
+   110                                 
+   111                                 
+   112                                 
+   113                                 
+   114                                 
+   115                                 
+   116                                 
+   117                                 
+   118                                 
+   119                                 
+   120                                 [global fileRead]
+   121                                 fileRead:
+   122                                 
+   123 00000068 53                      push rbx
+   124 00000069 4154                    push r12
+   125 0000006B 4889F3                  mov rbx, rsi
+   126                                 
+   127                                 
+   128 0000006E 48C7C002000000          mov rax, SYS_open
+   129                                 
+   130 00000075 48C7C600000000          mov rsi, O_RDONLY
+   131 0000007C 0F05                    syscall
+   132                                 
+   133 0000007E 83F800                  cmp eax, 0
+   134 00000081 7C32                    jl fileRead_error
+   135                                 
+   136                                 
+   137 00000083 4989C4                  mov r12, rax
+   138                                 
+   139                                 
+   140                                 
+   141 00000086 48C7C000000000          mov rax, SYS_read
+   142 0000008D 4C89E7                  mov rdi, r12
+   143 00000090 4889DE                  mov rsi, rbx
+   144 00000093 48C7C2FF000000          mov rdx, MAX_STRING_LEN
+   145 0000009A 0F05                    syscall
+   146                                 
+   147 0000009C 4883F800                cmp rax, 0
+   148 000000A0 7C13                    jl fileRead_error
+   149                                 
+   150                                 
+   151 000000A2 48C7C003000000          mov rax, SYS_close
+   152 000000A9 4C89E7                  mov rdi, r12
+   153 000000AC 0F05                    syscall
+   154                                 
+   155 000000AE 48C7C000000000          mov rax, SUCCESS
+   156 000000B5 EB05                    jmp fileRead_end
+   157                                 
+   158                                 fileRead_error:
+   159 000000B7 48C7C001000000          mov rax, FAILURE
+   160                                 
+   161                                 fileRead_end:
+   162 000000BE 415C                    pop r12
+   163 000000C0 5B                      pop rbx
+   164 000000C1 C3                      ret
+   165                                 
+   166                                 
+   167                                 
+   168                                 
+   169                                 
+   170                                 
+   171                                 
+   172                                 
+   173                                 
+   174                                 
+   175                                 
+   176                                 
+   177                                 
+   178                                 
+   179                                 
+   180                                 
+   181                                 
+   182                                 
+   183                                 [global printString]
+   184                                 printString:
+   185                                 
+   186 000000C2 53                      push rbx
+   187                                 
+   188                                 
+   189                                 
+   190 000000C3 4889FB                  mov rbx, rdi
+   191 000000C6 48C7C200000000          mov rdx, 0
+   192                                 countLoop:
+   193 000000CD 803B00                  cmp byte [rbx], NULL
+   194 000000D0 7406                    je countDone
+   195 000000D2 48FFC2                  inc rdx
+   196 000000D5 48FFC3                  inc rbx
+   197 000000D8 EBF1                    jmp countLoop
+   198                                 countDone:
+   199 000000DA 4883FA00                cmp rdx, 0
+   200 000000DE 7411                    je printDone
+   201                                 
+   202                                 
+   203                                 
+   204 000000E0 48C7C001000000          mov rax, SYS_write
+   205 000000E7 4889FE                  mov rsi, rdi
+   206 000000EA 48C7C701000000          mov rdi, STDOUT
+   207                                 
+   208 000000F1 0F05                    syscall
+   209                                 
+   210                                 
+   211                                 printDone:
+   212 000000F3 5B                      pop rbx
+   213 000000F4 C3                      ret
+   214                                 

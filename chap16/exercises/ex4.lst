@@ -1,0 +1,307 @@
+     1                                 %line 1+1 ex4.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [section .note.GNU-stack noalloc noexec nowrite progbits]
+    11                                 
+    12                                 
+    13                                 [section .data]
+    14                                 
+    15                                 
+    16                                 SUCCESS equ 0
+    17                                 FAILURE equ 1
+    18                                 NULL equ 0
+    19                                 LF equ 10
+    20                                 EXIT_SUCCESS equ 0
+    21                                 
+    22                                 STDOUT equ 01
+    23                                 
+    24                                 SYS_write equ 01
+    25                                 SYS_exit equ 60
+    26                                 
+    27                                 
+    28                                 EXPECTED_ARGS_NUM equ 4
+    29                                 
+    30                                 
+    31 00000000 4572726F723A205468-    mesg_wrongnumargs db 'Error: The number of arguments must be 3', LF, NULL
+    32 00000000 65206E756D62657220-
+    33 00000000 6F6620617267756D65-
+    34 00000000 6E7473206D75737420-
+    35 00000000 626520330A00       
+    36 0000002A 4572726F723A205468-    mesg_wrongfmtargs db 'Error: The argument must be valid number', LF, NULL
+    37 0000002A 6520617267756D656E-
+    38 0000002A 74206D757374206265-
+    39 0000002A 2076616C6964206E75-
+    40 0000002A 6D6265720A00       
+    41 00000054 0A00                   newLine db LF, NULL
+    42                                 
+    43 00000056 0000000000000000       sum dq 0
+    44                                 
+    45                                 
+    46                                 
+    47                                 [section .bss]
+    48                                 
+    49 00000000 <gap>                  num resq 1
+    50 00000008 <gap>                  sumStr resb 15
+    51                                 
+    52                                 
+    53                                 
+    54                                 [section .text]
+    55                                 [global main]
+    56                                 main:
+    57                                 
+    58 00000000 4889F9                  mov rcx, rdi
+    59 00000003 4989F5                  mov r13, rsi
+    60                                 
+    61                                 
+    62 00000006 4883F904                cmp rcx, EXPECTED_ARGS_NUM
+    63 0000000A 0F8585000000            jne wrongNumArgs
+    64                                 
+    65                                 
+    66                                 
+    67 00000010 48C7C301000000          mov rbx, 1
+    68                                 checkLoop:
+    69 00000017 4D8B64DD00              mov r12, [r13+rbx*8]
+    70                                 
+    71 0000001C 4C89E7                  mov rdi, r12
+    72 0000001F E832010000              call printString
+    73 00000024 48C7C7[00000000]        mov rdi, newLine
+    74 0000002B E826010000              call printString
+    75                                 
+    76 00000030 498B7CDD00              mov rdi, [r13+rbx*8]
+    77 00000035 48C7C6[00000000]        mov rsi, num
+    78 0000003C E873000000              call str2int
+    79                                 
+    80 00000041 83F800                  cmp eax, SUCCESS
+    81 00000044 7545                    jne wrongFmtArgs
+    82 00000046 488B0425[00000000]      mov rax, qword [num]
+    83 0000004E 48010425[00000000]      add qword [sum], rax
+    84                                 
+    85 00000056 48FFC3                  inc rbx
+    86 00000059 4883FB04                cmp rbx, EXPECTED_ARGS_NUM
+    87 0000005D 75B6                    jne checkLoop
+    88                                 
+    89                                 
+    90 0000005F 488B3C25[00000000]      mov rdi, qword [sum]
+    91 00000067 48C7C6[00000000]        mov rsi, sumStr
+    92 0000006E E8A4000000              call int2str
+    93                                 
+    94 00000073 48C7C7[00000000]        mov rdi, sumStr
+    95 0000007A E8D7000000              call printString
+    96 0000007F 48C7C7[00000000]        mov rdi, newLine
+    97 00000086 E8CB000000              call printString
+    98 0000008B EB1A                    jmp last
+    99                                 
+   100                                 
+   101                                 
+   102                                 wrongFmtArgs:
+   103 0000008D 48C7C7[00000000]        mov rdi, mesg_wrongfmtargs
+   104 00000094 E8BD000000              call printString
+   105 00000099 EB0C                    jmp last
+   106                                 
+   107                                 wrongNumArgs:
+   108 0000009B 48C7C7[00000000]        mov rdi, mesg_wrongnumargs
+   109 000000A2 E8AF000000              call printString
+   110 000000A7 EBFE                    jmp last
+   111                                 
+   112                                 last:
+   113 000000A9 48C7C03C000000          mov rax, SYS_exit
+   114 000000B0 48C7C700000000          mov rdi, EXIT_SUCCESS
+   115 000000B7 0F05                    syscall
+   116                                 
+   117                                 
+   118                                 
+   119                                 
+   120                                 
+   121                                 
+   122                                 
+   123                                 
+   124                                 
+   125                                 
+   126                                 
+   127                                 
+   128                                 
+   129                                 
+   130                                 
+   131                                 [global str2int]
+   132                                 str2int:
+   133                                 
+   134                                 
+   135 000000B9 55                      push rbp
+   136 000000BA 53                      push rbx
+   137 000000BB 4889E5                  mov rbp, rsp
+   138                                 
+   139                                 
+   140 000000BE 49C7C20A000000          mov r10, 10
+   141                                 
+   142 000000C5 49C7C301000000          mov r11, 1
+   143                                 
+   144                                 
+   145                                 
+   146 000000CC 48C7C100000000          mov rcx, 0
+   147                                 
+   148                                 extractLoop:
+   149 000000D3 8A040F                  mov al, byte [rdi+rcx]
+   150                                 
+   151                                 
+   152 000000D6 3C00                    cmp al, NULL
+   153 000000D8 7412                    je combineDigits
+   154                                 
+   155                                 
+   156 000000DA 3C30                    cmp al, '0'
+   157 000000DC 7231                    jb invalidStr
+   158 000000DE 3C39                    cmp al, '9'
+   159 000000E0 772D                    ja invalidStr
+   160                                 
+   161                                 
+   162 000000E2 2C30                    sub al, '0'
+   163 000000E4 480FB6C0                movzx rax, al
+   164 000000E8 50                      push rax
+   165                                 
+   166                                 
+   167 000000E9 48FFC1                  inc rcx
+   168 000000EC EBE3                    jmp extractLoop
+   169                                 
+   170                                 
+   171                                 
+   172                                 combineDigits:
+   173                                 
+   174 000000EE 48C7C300000000          mov rbx, 0
+   175                                 
+   176                                 combineLoop:
+   177                                 
+   178                                 
+   179 000000F5 58                      pop rax
+   180 000000F6 49F7E3                  mul r11
+   181 000000F9 4801C3                  add rbx, rax
+   182                                 
+   183                                 
+   184 000000FC 4C89D8                  mov rax, r11
+   185 000000FF 49F7E2                  mul r10
+   186 00000102 4989C3                  mov r11, rax
+   187 00000105 E2EC                    loop combineLoop
+   188                                 
+   189                                 
+   190 00000107 48891E                  mov qword [rsi], rbx
+   191 0000010A B800000000              mov eax, SUCCESS
+   192 0000010F EB03                    jmp str2intRet
+   193                                 
+   194                                 invalidStr:
+   195 00000111 B801000000              mov eax, FAILURE
+   196                                 
+   197                                 str2intRet:
+   198                                 
+   199                                 
+   200                                 
+   201 00000116 4889EC                  mov rsp, rbp
+   202 00000119 5B                      pop rbx
+   203 0000011A 5D                      pop rbp
+   204 0000011B C3                      ret
+   205                                 
+   206                                 
+   207                                 
+   208                                 
+   209                                 
+   210                                 
+   211                                 
+   212                                 
+   213                                 
+   214                                 
+   215                                 
+   216                                 
+   217                                 
+   218                                 
+   219                                 [global int2str]
+   220                                 int2str:
+   221                                 
+   222 0000011C 53                      push rbx
+   223                                 
+   224                                 
+   225                                 division:
+   226 0000011D 4889F8                  mov rax, rdi
+   227 00000120 48C7C100000000          mov rcx, 0
+   228 00000127 48C7C30A000000          mov rbx, 10
+   229                                 
+   230                                 divideLoop:
+   231                                 
+   232 0000012E 48C7C200000000          mov rdx, 0
+   233 00000135 48F7F3                  div rbx
+   234                                 
+   235 00000138 52                      push rdx
+   236                                 
+   237 00000139 48FFC1                  inc rcx
+   238                                 
+   239 0000013C 4883F800                cmp rax, 0
+   240 00000140 75EA                    jne divideLoop
+   241                                 
+   242                                 
+   243                                 
+   244 00000142 48C7C700000000          mov rdi, 0
+   245                                 
+   246                                 popLoop:
+   247 00000149 58                      pop rax
+   248 0000014A 0430                    add al, '0'
+   249 0000014C 88043E                  mov byte [rsi+rdi], al
+   250 0000014F 48FFC7                  inc rdi
+   251 00000152 E2F3                    loop popLoop
+   252                                 
+   253 00000154 C6443E0100              mov byte [rsi+rdi+1], NULL
+   254                                 
+   255                                 
+   256 00000159 5B                      pop rbx
+   257 0000015A C3                      ret
+   258                                 
+   259                                 
+   260                                 
+   261                                 
+   262                                 
+   263                                 
+   264                                 
+   265                                 
+   266                                 
+   267                                 
+   268                                 
+   269                                 
+   270                                 
+   271                                 
+   272                                 
+   273                                 
+   274                                 
+   275                                 
+   276                                 [global printString]
+   277                                 printString:
+   278                                 
+   279 0000015B 53                      push rbx
+   280                                 
+   281                                 
+   282                                 
+   283 0000015C 4889FB                  mov rbx, rdi
+   284 0000015F 48C7C200000000          mov rdx, 0
+   285                                 countLoop:
+   286 00000166 803B00                  cmp byte [rbx], NULL
+   287 00000169 7406                    je countDone
+   288 0000016B 48FFC2                  inc rdx
+   289 0000016E 48FFC3                  inc rbx
+   290 00000171 EBF1                    jmp countLoop
+   291                                 countDone:
+   292 00000173 4883FA00                cmp rdx, 0
+   293 00000177 7411                    je printDone
+   294                                 
+   295                                 
+   296                                 
+   297 00000179 48C7C001000000          mov rax, SYS_write
+   298 00000180 4889FE                  mov rsi, rdi
+   299 00000183 48C7C701000000          mov rdi, STDOUT
+   300                                 
+   301 0000018A 0F05                    syscall
+   302                                 
+   303                                 
+   304                                 printDone:
+   305 0000018C 5B                      pop rbx
+   306 0000018D C3                      ret
+   307                                 

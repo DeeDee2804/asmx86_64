@@ -1,0 +1,121 @@
+     1                                 %line 1+1 cmdLine.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .note.GNU-stack noalloc noexec nowrite progbits]
+     8                                 
+     9                                 
+    10                                 [section .data]
+    11                                 
+    12                                 
+    13                                 
+    14                                 LF equ 10
+    15                                 NULL equ 0
+    16                                 TRUE equ 1
+    17                                 FALSE equ 0
+    18                                 EXIT_SUCCESS equ 0
+    19                                 
+    20                                 STDIN equ 0
+    21                                 STDOUT equ 1
+    22                                 STDERR equ 2
+    23                                 
+    24                                 SYS_read equ 0
+    25                                 SYS_write equ 1
+    26                                 SYS_open equ 2
+    27                                 SYS_close equ 3
+    28                                 SYS_fork equ 57
+    29                                 SYS_exit equ 60
+    30                                 SYS_creat equ 85
+    31                                 SYS_time equ 201
+    32                                 
+    33                                 
+    34                                 
+    35 00000000 0A00                   newLine db LF, NULL
+    36                                 
+    37                                 
+    38                                 [section .text]
+    39                                 [global main]
+    40                                 main:
+    41                                 
+    42                                 
+    43                                 
+    44                                 
+    45                                 
+    46                                 
+    47 00000000 4989FC                  mov r12, rdi
+    48 00000003 4989F5                  mov r13, rsi
+    49                                 
+    50                                 
+    51                                 
+    52                                 
+    53                                 
+    54                                 printArguments:
+    55 00000006 48C7C301000000          mov rbx, 1
+    56                                 printLoop:
+    57 0000000D 498B7CDD00              mov rdi, qword [r13+rbx*8]
+    58 00000012 E81F000000              call printString
+    59                                 
+    60 00000017 48C7C7[00000000]        mov rdi, newLine
+    61 0000001E E813000000              call printString
+    62                                 
+    63 00000023 48FFC3                  inc rbx
+    64 00000026 4C39E3                  cmp rbx, r12
+    65 00000029 7CE0                    jl printLoop
+    66                                 
+    67                                 
+    68                                 
+    69                                 exampleDone:
+    70 0000002B 48C7C03C000000          mov rax, SYS_exit
+    71 00000032 48C7C700000000          mov rdi, EXIT_SUCCESS
+    72 00000039 0F05                    syscall
+    73                                 
+    74                                 
+    75                                 
+    76                                 
+    77                                 
+    78                                 
+    79                                 
+    80                                 
+    81                                 
+    82                                 
+    83                                 
+    84                                 
+    85                                 
+    86                                 
+    87                                 
+    88                                 
+    89                                 
+    90                                 [global printString]
+    91                                 printString:
+    92                                 
+    93 0000003B 53                      push rbx
+    94                                 
+    95                                 
+    96                                 
+    97 0000003C 4889FB                  mov rbx, rdi
+    98 0000003F 48C7C200000000          mov rdx, 0
+    99                                 countLoop:
+   100 00000046 803B00                  cmp byte [rbx], NULL
+   101 00000049 7406                    je countDone
+   102 0000004B 48FFC2                  inc rdx
+   103 0000004E 48FFC3                  inc rbx
+   104 00000051 EBF1                    jmp countLoop
+   105                                 countDone:
+   106 00000053 4883FA00                cmp rdx, 0
+   107 00000057 7411                    je prtDone
+   108                                 
+   109                                 
+   110                                 
+   111 00000059 48C7C001000000          mov rax, SYS_write
+   112 00000060 4889FE                  mov rsi, rdi
+   113 00000063 48C7C701000000          mov rdi, STDOUT
+   114                                 
+   115 0000006A 0F05                    syscall
+   116                                 
+   117                                 
+   118                                 prtDone:
+   119 0000006C 5B                      pop rbx
+   120 0000006D C3                      ret
+   121                                 

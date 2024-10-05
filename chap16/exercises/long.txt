@@ -1,0 +1,1 @@
+There are two special section during the call instruction that is prologue and epilogue. The prologue help us to save the state of program (enable some reserved register could be used during execution) and before return the epilogue help us to restore the state before calling the function.
