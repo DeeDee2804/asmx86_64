@@ -1,0 +1,339 @@
+     1                                 %line 1+1 myGetLine.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [section .note.GNU-stack noalloc noexec nowrite progbits]
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 TRUE equ 0
+    15                                 FALSE equ 1
+    16                                 NULL equ 0
+    17                                 LF equ 10
+    18                                 EXIT_SUCCESS equ 0
+    19                                 
+    20                                 STDIN equ 00
+    21                                 STDOUT equ 01
+    22                                 STDERR equ 02
+    23                                 
+    24                                 SYS_read equ 0
+    25                                 SYS_write equ 1
+    26                                 SYS_open equ 2
+    27                                 SYS_close equ 3
+    28                                 SYS_fork equ 57
+    29                                 SYS_exit equ 60
+    30                                 SYS_creat equ 85
+    31                                 SYS_time equ 201
+    32                                 
+    33                                 O_RDONLY equ 000000
+    34                                 O_WRONLY equ 000001
+    35                                 O_RDWR equ 000002
+    36                                 
+    37                                 
+    38                                 EXPECTED_ARGS_NUM equ 2
+    39                                 BUFFER_SIZE equ 100
+    40                                 MAX_STRING_LEN equ 255
+    41                                 
+    42                                 
+    43 00000000 4572726F723A204F6E-    mesg_wrongnumargs db 'Error: Only one file name is accepted', LF, NULL
+    44 00000000 6C79206F6E65206669-
+    45 00000000 6C65206E616D652069-
+    46 00000000 732061636365707465-
+    47 00000000 640A00             
+    48 00000027 4572726F723A204669-    mesg_fileopenerror db 'Error: File can not be open', LF, NULL
+    49 00000027 6C652063616E206E6F-
+    50 00000027 74206265206F70656E-
+    51 00000027 0A00               
+    52 00000044 4572726F723A204669-    mesg_filereaderror db 'Error: File read is not successful', LF, NULL
+    53 00000044 6C6520726561642069-
+    54 00000044 73206E6F7420737563-
+    55 00000044 6365737366756C0A00 
+    56 00000068 0A00                   newLine db LF, NULL
+    57 0000006A 01                     eofFlag db FALSE
+    58 0000006B 6400                   buffIdx dw BUFFER_SIZE
+    59 0000006D 6400                   buffSize dw BUFFER_SIZE
+    60                                 
+    61                                 
+    62                                 
+    63                                 [section .bss]
+    64                                 
+    65 00000000 <gap>                  strLine resb MAX_STRING_LEN
+    66 000000FF <gap>                  strBuf resb BUFFER_SIZE
+    67                                 
+    68                                 
+    69                                 
+    70                                 [section .text]
+    71                                 [global main]
+    72                                 main:
+    73                                 
+    74 00000000 4989FC                  mov r12, rdi
+    75 00000003 4989F5                  mov r13, rsi
+    76                                 
+    77                                 
+    78 00000006 4983FC02                cmp r12, EXPECTED_ARGS_NUM
+    79 0000000A 0F85E2000000            jne wrongNumArgs
+    80                                 
+    81                                 
+    82                                 
+    83 00000010 B802000000              mov eax, SYS_open
+    84 00000015 488B7E08                mov rdi, qword [rsi+8]
+    85 00000019 48C7C600000000          mov rsi, O_RDONLY
+    86 00000020 0F05                    syscall
+    87                                 
+    88 00000022 83F800                  cmp eax, 0
+    89 00000025 0F8CB9000000            jl fileOpenError
+    90                                 
+    91                                 
+    92 0000002B 4989C4                  mov r12, rax
+    93                                 
+    94                                 
+    95                                 
+    96 0000002E 4C89E7                  mov rdi, r12
+    97 00000031 48C7C6[00000000]        mov rsi, strLine
+    98 00000038 48C7C2FF000000          mov rdx, MAX_STRING_LEN
+    99 0000003F E8CD000000              call myGetLine
+   100 00000044 4883F800                cmp rax, TRUE
+   101 00000048 0F8588000000            jne fileReadError
+   102                                 
+   103                                 
+   104 0000004E 48C7C7[00000000]        mov rdi, strLine
+   105 00000055 E883010000              call printString
+   106 0000005A 48C7C7[00000000]        mov rdi, newLine
+   107 00000061 E877010000              call printString
+   108                                 
+   109                                 
+   110                                 
+   111 00000066 4C89E7                  mov rdi, r12
+   112 00000069 48C7C6[00000000]        mov rsi, strLine
+   113 00000070 48C7C2FF000000          mov rdx, MAX_STRING_LEN
+   114 00000077 E895000000              call myGetLine
+   115 0000007C 4883F800                cmp rax, TRUE
+   116 00000080 7558                    jne fileReadError
+   117                                 
+   118                                 
+   119 00000082 48C7C7[00000000]        mov rdi, strLine
+   120 00000089 E84F010000              call printString
+   121 0000008E 48C7C7[00000000]        mov rdi, newLine
+   122 00000095 E843010000              call printString
+   123                                 
+   124                                 
+   125                                 
+   126 0000009A 4C89E7                  mov rdi, r12
+   127 0000009D 48C7C6[00000000]        mov rsi, strLine
+   128 000000A4 48C7C2FF000000          mov rdx, MAX_STRING_LEN
+   129 000000AB E861000000              call myGetLine
+   130 000000B0 4883F800                cmp rax, TRUE
+   131 000000B4 7524                    jne fileReadError
+   132                                 
+   133                                 
+   134 000000B6 48C7C7[00000000]        mov rdi, strLine
+   135 000000BD E81B010000              call printString
+   136 000000C2 48C7C7[00000000]        mov rdi, newLine
+   137 000000C9 E80F010000              call printString
+   138                                 
+   139                                 
+   140                                 
+   141 000000CE 48C7C003000000          mov rax, SYS_close
+   142 000000D5 4C89E7                  mov rdi, r12
+   143 000000D8 0F05                    syscall
+   144 000000DA EB28                    jmp last
+   145                                 
+   146                                 
+   147                                 
+   148                                 fileReadError:
+   149 000000DC 48C7C7[00000000]        mov rdi, mesg_filereaderror
+   150 000000E3 E8F5000000              call printString
+   151 000000E8 EB1A                    jmp last
+   152                                 
+   153                                 fileOpenError:
+   154 000000EA 48C7C7[00000000]        mov rdi, mesg_fileopenerror
+   155 000000F1 E8E7000000              call printString
+   156 000000F6 EB0C                    jmp last
+   157                                 
+   158                                 wrongNumArgs:
+   159 000000F8 48C7C7[00000000]        mov rdi, mesg_wrongnumargs
+   160 000000FF E8D9000000              call printString
+   161 00000104 EBFE                    jmp last
+   162                                 
+   163                                 last:
+   164 00000106 48C7C03C000000          mov rax, SYS_exit
+   165 0000010D 48C7C700000000          mov rdi, EXIT_SUCCESS
+   166 00000114 0F05                    syscall
+   167                                 
+   168                                 
+   169                                 
+   170                                 
+   171                                 
+   172                                 
+   173                                 
+   174                                 
+   175                                 
+   176                                 
+   177                                 
+   178                                 
+   179                                 
+   180                                 
+   181                                 
+   182                                 
+   183                                 
+   184                                 
+   185                                 
+   186                                 
+   187                                 
+   188                                 
+   189                                 
+   190                                 
+   191                                 
+   192                                 
+   193                                 
+   194                                 
+   195                                 
+   196                                 
+   197                                 
+   198                                 
+   199                                 
+   200                                 
+   201                                 
+   202                                 
+   203                                 
+   204                                 
+   205                                 [global myGetLine]
+   206                                 myGetLine:
+   207                                 
+   208 00000116 53                      push rbx
+   209 00000117 4154                    push r12
+   210 00000119 4155                    push r13
+   211 0000011B 4156                    push r14
+   212                                 
+   213 0000011D 4889FB                  mov rbx, rdi
+   214                                 
+   215 00000120 4989F4                  mov r12, rsi
+   216                                 
+   217 00000123 4989D5                  mov r13, rdx
+   218 00000126 49FFCD                  dec r13
+   219                                 
+   220 00000129 49C7C600000000          mov r14, 0
+   221                                 
+   222                                 
+   223                                 
+   224                                 readCharLoop:
+   225 00000130 66448B0C25[00000000]      mov r9w, word [buffSize]
+   226 00000139 66443B0C25[00000000]      cmp r9w, word [buffIdx]
+   227 00000142 7754                    ja getFromBuffer
+   228 00000144 448A0C25[00000000]      mov r9b, byte [eofFlag]
+   229 0000014C 4180F900                cmp r9b, TRUE
+   230 00000150 7471                    je endOfLine
+   231                                 
+   232                                 
+   233 00000152 48C7C000000000          mov rax, SYS_read
+   234 00000159 4889DF                  mov rdi, rbx
+   235 0000015C 48C7C6[00000000]        mov rsi, strBuf
+   236 00000163 48C7C264000000          mov rdx, BUFFER_SIZE
+   237 0000016A 0F05                    syscall
+   238                                 
+   239                                 
+   240 0000016C 4883F800                cmp rax, 0
+   241 00000170 7C5F                    jl getLine_error
+   242                                 
+   243                                 
+   244 00000172 66C70425[00000000]-     mov word [buffIdx], 0
+   245 00000172 0000               
+   246 0000017C 66890425[00000000]      mov word [buffSize], ax
+   247                                 
+   248                                 
+   249 00000184 6683F864                cmp ax, BUFFER_SIZE
+   250 00000188 7C00                    jl endOfFile
+   251 0000018A EB0C                    jmp getFromBuffer
+   252                                 
+   253                                 
+   254                                 endOfFile:
+   255 0000018C C60425[00000000]00      mov byte [eofFlag], TRUE
+   256 00000194 6683F800                cmp ax, 0
+   257 00000198 7429                    je endOfLine
+   258                                 
+   259                                 
+   260                                 getFromBuffer:
+   261 0000019A 668B3C25[00000000]      mov di, word [buffIdx]
+   262 000001A2 8A87[00000000]          mov al, byte [strBuf+rdi]
+   263 000001A8 43880434                mov byte [r12+r14], al
+   264 000001AC 49FFC6                  inc r14
+   265 000001AF 66FF0425[00000000]      inc word [buffIdx]
+   266                                 
+   267                                 
+   268 000001B7 4D39EE                  cmp r14, r13
+   269 000001BA 7307                    jae endOfLine
+   270                                 
+   271 000001BC 3C0A                    cmp al, LF
+   272 000001BE 7403                    je endOfLine
+   273                                 
+   274                                 
+   275 000001C0 E966FFFFFF              jmp readCharLoop
+   276                                 endOfLine:
+   277 000001C5 43C6043400              mov byte [r12+r14], NULL
+   278 000001CA 48C7C000000000          mov rax, TRUE
+   279 000001D1 EB05                    jmp getLine_end
+   280                                 
+   281                                 getLine_error:
+   282 000001D3 48C7C001000000          mov rax, FALSE
+   283                                 
+   284                                 getLine_end:
+   285 000001DA 415E                    pop r14
+   286 000001DC 415D                    pop r13
+   287 000001DE 415C                    pop r12
+   288 000001E0 5B                      pop rbx
+   289 000001E1 C3                      ret
+   290                                 
+   291                                 
+   292                                 
+   293                                 
+   294                                 
+   295                                 
+   296                                 
+   297                                 
+   298                                 
+   299                                 
+   300                                 
+   301                                 
+   302                                 
+   303                                 
+   304                                 
+   305                                 
+   306                                 
+   307                                 
+   308                                 [global printString]
+   309                                 printString:
+   310                                 
+   311 000001E2 53                      push rbx
+   312                                 
+   313                                 
+   314                                 
+   315 000001E3 4889FB                  mov rbx, rdi
+   316 000001E6 48C7C200000000          mov rdx, 0
+   317                                 countLoop:
+   318 000001ED 803B00                  cmp byte [rbx], NULL
+   319 000001F0 7406                    je countDone
+   320 000001F2 48FFC2                  inc rdx
+   321 000001F5 48FFC3                  inc rbx
+   322 000001F8 EBF1                    jmp countLoop
+   323                                 countDone:
+   324 000001FA 4883FA00                cmp rdx, 0
+   325 000001FE 7411                    je printDone
+   326                                 
+   327                                 
+   328                                 
+   329 00000200 48C7C001000000          mov rax, SYS_write
+   330 00000207 4889FE                  mov rsi, rdi
+   331 0000020A 48C7C701000000          mov rdi, STDOUT
+   332                                 
+   333 00000211 0F05                    syscall
+   334                                 
+   335                                 
+   336                                 printDone:
+   337 00000213 5B                      pop rbx
+   338 00000214 C3                      ret
+   339                                 
