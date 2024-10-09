@@ -1,0 +1,21 @@
+#------------------------------------
+# Debugger Input Script
+#------------------------------------
+echo \n\n
+break last
+run
+set pagination off
+set logging file absMacro.txt
+set logging overwrite
+set logging enabled on
+set prompt
+echo ------------------------------------ \n
+echo Display the absolute value \n
+echo \n
+x/fw &num1
+x/fg &num2
+x/fw &num3
+echo \n \n
+set logging enabled off
+continue
+quit

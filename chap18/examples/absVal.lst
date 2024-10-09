@@ -1,0 +1,46 @@
+     1                                 %line 1+1 absVal.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 [section .data]
+    10                                 
+    11                                 
+    12                                 
+    13                                 TRUE equ 1
+    14                                 FALSE equ 0
+    15                                 
+    16                                 EXIT_SUCCESS equ 0
+    17                                 SYS_exit equ 60
+    18                                 
+    19                                 
+    20                                 
+    21 00000000 0000000000000000       dZero dq 0.0
+    22 00000008 000000000000F0BF       dNegOne dq -1.0
+    23 00000010 00000000008020C0       fltVal dq -8.25
+    24                                 
+    25                                 
+    26                                 
+    27                                 [section .text]
+    28                                 [global _start]
+    29                                 _start:
+    30                                 
+    31                                 
+    32                                 
+    33 00000000 F20F100425[00000000]      movsd xmm0, qword [fltVal]
+    34 00000009 660F2E0425[00000000]      ucomisd xmm0, qword [dZero]
+    35 00000012 7310                    jae isPos
+    36 00000014 F20F590425[00000000]      mulsd xmm0, qword [dNegOne]
+    37 0000001D F20F110425[00000000]      movsd qword [fltVal], xmm0
+    38                                 
+    39                                 isPos:
+    40                                 
+    41                                 
+    42                                 
+    43                                 last:
+    44 00000026 48C7C03C000000          mov rax, SYS_exit
+    45 0000002D 48C7C700000000          mov rdi, EXIT_SUCCESS
+    46 00000034 0F05                    syscall

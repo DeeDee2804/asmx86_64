@@ -1,0 +1,116 @@
+     1                                 %line 1+1 sameSum.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [section .data]
+    11                                 
+    12                                 
+    13                                 
+    14                                 NULL equ 0
+    15                                 LF equ 10
+    16                                 TRUE equ 1
+    17                                 FALSE equ 0
+    18                                 STDOUT equ 1
+    19                                 
+    20                                 EXIT_SUCCESS equ 0
+    21                                 SYS_write equ 1
+    22                                 SYS_exit equ 60
+    23                                 
+    24                                 
+    25                                 
+    26 00000000 000000000000F03F       posOne dq 1.0
+    27 00000008 9A9999999999B93F       zeroPointOne dq 0.1
+    28 00000010 0000000000000000       sumOne dq 0.0
+    29 00000018 4172652053616D650A-    sameMsg db "Are Same", LF, NULL
+    30 00000018 00                 
+    31 00000022 417265204E6F742053-    notSameMsg db "Are Not Same", LF, NULL
+    32 00000022 616D650A00         
+    33                                 
+    34                                 
+    35                                 
+    36                                 [section .text]
+    37                                 [global _start]
+    38                                 _start:
+    39                                 
+    40                                 
+    41                                 
+    42 00000000 B90A000000              mov ecx, 10
+    43 00000005 F20F100C25[00000000]      movsd xmm1, qword [sumOne]
+    44 0000000E F20F100425[00000000]      movsd xmm0, qword [zeroPointOne]
+    45                                 sumLp:
+    46 00000017 F20F58C8                addsd xmm1, xmm0
+    47 0000001B E2F8                    loop sumLp
+    48                                 
+    49 0000001D F20F110C25[00000000]      movsd qword [sumOne], xmm1
+    50                                 
+    51                                 
+    52                                 
+    53 00000026 660F2E0C25[00000000]      ucomisd xmm1, qword [posOne]
+    54 0000002F 740C                    je sameOne
+    55 00000031 48C7C7[00000000]        mov rdi, notSameMsg
+    56 00000038 E819000000              call printString
+    57 0000003D EB0A                    jmp last
+    58                                 
+    59                                 sameOne:
+    60 0000003F 48C7C7[00000000]        mov rdi, sameMsg
+    61 00000046 E80B000000              call printString
+    62                                 
+    63                                 
+    64                                 last:
+    65 0000004B 48C7C03C000000          mov rax, SYS_exit
+    66 00000052 48C7C700000000          mov rdi, EXIT_SUCCESS
+    67 00000059 0F05                    syscall
+    68                                 
+    69                                 
+    70                                 
+    71                                 
+    72                                 
+    73                                 
+    74                                 
+    75                                 
+    76                                 
+    77                                 
+    78                                 
+    79                                 
+    80                                 
+    81                                 
+    82                                 
+    83                                 
+    84                                 
+    85                                 [global printString]
+    86                                 printString:
+    87                                 
+    88 0000005B 53                      push rbx
+    89                                 
+    90                                 
+    91                                 
+    92 0000005C 4889FB                  mov rbx, rdi
+    93 0000005F 48C7C200000000          mov rdx, 0
+    94                                 countLoop:
+    95 00000066 803B00                  cmp byte [rbx], NULL
+    96 00000069 7406                    je countDone
+    97 0000006B 48FFC2                  inc rdx
+    98 0000006E 48FFC3                  inc rbx
+    99 00000071 EBF1                    jmp countLoop
+   100                                 countDone:
+   101 00000073 4883FA00                cmp rdx, 0
+   102 00000077 7411                    je printDone
+   103                                 
+   104                                 
+   105                                 
+   106 00000079 48C7C001000000          mov rax, SYS_write
+   107 00000080 4889FE                  mov rsi, rdi
+   108 00000083 48C7C701000000          mov rdi, STDOUT
+   109                                 
+   110 0000008A 0F05                    syscall
+   111                                 
+   112                                 
+   113                                 printDone:
+   114 0000008C 5B                      pop rbx
+   115 0000008D C3                      ret
+   116                                 
